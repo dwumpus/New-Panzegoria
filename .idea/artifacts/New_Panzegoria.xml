@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="New-Panzegoria">
+    <output-path>C:/bukkit/plugins</output-path>
+    <root id="archive" name="New-Panzegoria.jar">
+      <element id="module-output" name="New-Panzegoria" />
+      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+    </root>
+  </artifact>
+</component>

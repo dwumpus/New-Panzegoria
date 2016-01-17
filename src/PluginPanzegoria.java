@@ -1,5 +1,6 @@
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -7,6 +8,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.Vector;
+
 import java.util.Hashtable;
 
 /**
@@ -26,59 +29,117 @@ public final class PluginPanzegoria extends JavaPlugin implements Listener {
         getLogger().info("Enabled");
     }
 
-    private void PerformCopy(Player player) {
-        templateList = new Hashtable<>(1);
-        player.sendMessage(String.format("Copying Blocks between Location A and Location B"));
-        int minX;
-        int minY;
-        int minZ;
-        int maxX;
-        int maxY;
-        int maxZ;
+    private void CreateTemplate(World world) {
+        Vector min = CalculateMinimums();
+        Vector max = CalculateMaximums();
+        Vector offset = CalculateOffset();
 
-        if(locA.getX() > locB.getX()) {
-            maxX = (int) locA.getX();
-            minX = (int) locB.getX();
-        }
-        else {
-            maxX = (int) locB.getX();
-            minX = (int) locA.getX();
-        }
+        double templateX;
+        double templateY;
+        double templateZ;
 
-        if(locA.getY() > locB.getY()) {
-            maxY = (int) locA.getY();
-            minY = (int) locB.getY();
-        }
-        else {
-            maxY = (int) locB.getY();
-            minY = (int) locA.getY();
-        }
-
-        if(locA.getZ() > locB.getZ()) {
-            maxZ = (int) locA.getZ();
-            minZ = (int) locB.getZ();
-        }
-        else {
-            maxZ = (int) locB.getZ();
-            minZ = (int) locA.getZ();
-        }
-
-
-        for (int x = minX; x < maxX; x++) {
-            for (int y = minY; y < maxY; y++) {
-                for (int z = minZ; z < maxZ; z++) {
-                    Block block = player.getWorld().getBlockAt(x,y,z);
-                    if(block.getType() != Material.AIR) {
-                        //Location target = block.getLocation().subtract(minX,minY,minZ);
-                        templateList.putIfAbsent(block.getLocation(), block.getType());
-                    }
+        for (double x = min.getX(); x < max.getX(); x++) {
+            for (double y = min.getY(); x < max.getY(); x++) {
+                for (double z = min.getZ(); x < max.getZ(); x++) {
+                    templateX = x + offset.getX();
+                    templateY = y + offset.getY();
+                    templateZ = z + offset.getZ();
+                    templateList.putIfAbsent(new Location(world, templateX,templateY,templateZ), GetMaterialAtLocation(world,x,y,z));
                 }
             }
         }
+    }
+
+    private Material GetMaterialAtLocation(World w, double x, double y, double z) {
+        Location loc = new Location(w,x,y,z);
+        return loc.getBlock().getType();
+    }
+
+    private Vector CalculateMinimums() {
+        double minX;
+        double minY;
+        double minZ;
+
+        if(locA.getX() > locB.getX()) {
+            minX = locB.getX();
+        }
+        else {
+            minX = locA.getX();
+        }
+
+        if(locA.getY() > locB.getY()) {
+            minY = locB.getY();
+        }
+        else {
+            minY = locA.getY();
+        }
+
+        if(locA.getZ() > locB.getZ()) {
+            minZ = locB.getZ();
+        }
+        else {
+            minZ = locA.getZ();
+        }
+
+        Vector vectorOut = new Vector(minX, minY, minZ);
+
+        return vectorOut;
+    }
+
+    private Vector CalculateMaximums() {
+        double maxX;
+        double maxY;
+        double maxZ;
+
+        if(locA.getX() > locB.getX()) {
+            maxX = locA.getX();
+        }
+        else {
+            maxX = locB.getX();
+        }
+
+        if(locA.getY() > locB.getY()) {
+            maxY = locA.getY();
+        }
+        else {
+            maxY = locB.getY();
+        }
+
+        if(locA.getZ() > locB.getZ()) {
+            maxZ = locA.getZ();
+        }
+        else {
+            maxZ = locB.getZ();
+        }
+
+        Vector vectorOut = new Vector(maxX, maxY, maxZ);
+
+        return vectorOut;
+    }
+
+    private Vector CalculateOffset(){
+
+        Vector minVector = CalculateMinimums();
+        double offsetX = minVector.getX();
+        double offsetY = minVector.getY();
+        double offsetZ = minVector.getZ();
+
+        offsetX *= -1;
+        offsetY *= -1;
+        offsetZ *= -1;
+
+        Vector vectorOut = new Vector(offsetX,offsetY,offsetZ);
+
+        return vectorOut;
+    }
+
+    private void PerformCopy(Player player) {
+        player.sendMessage(String.format("Copying Blocks between Location A and Location B"));
+
+
+
 
         player.sendMessage(String.format("Found %s blocks", templateList.size()));
-
-
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 
 /**
@@ -17,8 +18,8 @@ import java.util.Hashtable;
  */
 public final class PluginPanzegoria extends JavaPlugin implements Listener {
 
-    private Hashtable<Location, Material> blockList;
-    private Hashtable<Location, Material> templateList;
+    private ArrayList<Block> blockList;
+    private Hashtable<Location, Block> templateList;
     private Location locA;
     private Location locB;
     private Location buildLoc;
@@ -29,56 +30,92 @@ public final class PluginPanzegoria extends JavaPlugin implements Listener {
         getLogger().info("Enabled");
     }
 
-    private void CreateTemplate(World world) {
-        Vector min = CalculateMinimums();
-        Vector max = CalculateMaximums();
-        Vector offset = CalculateOffset();
+    private void CreateTemplate(Player player) {
 
-        double templateX;
-        double templateY;
-        double templateZ;
+        try {
+            player.sendMessage(String.format("Beginning the creation of template."));
+            templateList = new Hashtable<>();
 
-        for (double x = min.getX(); x < max.getX(); x++) {
-            for (double y = min.getY(); x < max.getY(); x++) {
-                for (double z = min.getZ(); x < max.getZ(); x++) {
-                    templateX = x + offset.getX();
-                    templateY = y + offset.getY();
-                    templateZ = z + offset.getZ();
-                    templateList.putIfAbsent(new Location(world, templateX,templateY,templateZ), GetMaterialAtLocation(world,x,y,z));
+            World world = player.getWorld();
+
+            Vector min = CalculateMinimums();
+            Vector max = CalculateMaximums();
+            Vector offset = CalculateOffset();
+            player.sendMessage(String.format("Offsets are X: %s Y: %s Z: %s", offset.getX(), offset.getY(), offset.getZ()));
+
+            int templateX;
+            int templateY;
+            int templateZ;
+            player.sendMessage(String.format("Minimums are X: %s Y: %s Z: %s", min.getX(), min.getY(), min.getZ()));
+            //getLogger().info(String.format("X: %s Y: %s Z: %s", min.getX(), min.getY(), min.getZ()));
+            int minX = (int) min.getX();
+            int minY = (int) min.getY();
+            int minZ = (int) min.getZ();
+
+            int maxX = (int) max.getX();
+            int maxY = (int) max.getY();
+            int maxZ = (int) max.getZ();
+            player.sendMessage(String.format("Maximums are X: %s Y: %s Z: %s", maxX, maxY, maxZ));
+
+            Location originalLocation;
+            Location targetLocation;
+            Block blockOriginal;
+
+            for (int x = minX; x < maxX; x++) {
+                //player.sendMessage(String.format("Current block X: %s ", x));
+                for (int y = minY; y < maxY; y++) {
+                   //player.sendMessage(String.format("Current block Y: %s ", y));
+                    for (int z = minZ; z < maxZ; z++) {
+                        //player.sendMessage(String.format("Current block Z: %s ", z));
+                        templateX = x + (int) offset.getX();
+                        templateY = y + (int) offset.getY();
+                        templateZ = z + (int) offset.getZ();
+                        //player.sendMessage(String.format("Creating block at X: %s Y: %s Z: %s", templateX, templateY, templateZ));
+                        originalLocation = new Location(world, x, y, z);
+                        blockOriginal = originalLocation.getBlock();
+                        if (blockOriginal.getType() != Material.AIR) {
+                            targetLocation = new Location(player.getWorld(), templateX,templateY,templateZ);
+                            templateList.put(targetLocation,blockOriginal);
+                        }
+                    }
                 }
             }
+        } catch (Exception ex)
+        {
+            player.sendRawMessage(ex.getMessage());
         }
     }
 
-    private Material GetMaterialAtLocation(World w, double x, double y, double z) {
+
+    private Material GetMaterialAtLocation(World w, int x, int y, int z) {
         Location loc = new Location(w,x,y,z);
         return loc.getBlock().getType();
     }
 
     private Vector CalculateMinimums() {
-        double minX;
-        double minY;
-        double minZ;
+        int minX;
+        int minY;
+        int minZ;
 
         if(locA.getX() > locB.getX()) {
-            minX = locB.getX();
+            minX = (int) locB.getX();
         }
         else {
-            minX = locA.getX();
+            minX = (int) locA.getX();
         }
 
         if(locA.getY() > locB.getY()) {
-            minY = locB.getY();
+            minY = (int) locB.getY();
         }
         else {
-            minY = locA.getY();
+            minY = (int) locA.getY();
         }
 
         if(locA.getZ() > locB.getZ()) {
-            minZ = locB.getZ();
+            minZ = (int) locB.getZ();
         }
         else {
-            minZ = locA.getZ();
+            minZ = (int) locA.getZ();
         }
 
         Vector vectorOut = new Vector(minX, minY, minZ);
@@ -87,29 +124,29 @@ public final class PluginPanzegoria extends JavaPlugin implements Listener {
     }
 
     private Vector CalculateMaximums() {
-        double maxX;
-        double maxY;
-        double maxZ;
+        int maxX;
+        int maxY;
+        int maxZ;
 
         if(locA.getX() > locB.getX()) {
-            maxX = locA.getX();
+            maxX = (int) locA.getX();
         }
         else {
-            maxX = locB.getX();
+            maxX = (int) locB.getX();
         }
 
         if(locA.getY() > locB.getY()) {
-            maxY = locA.getY();
+            maxY = (int) locA.getY();
         }
         else {
-            maxY = locB.getY();
+            maxY = (int) locB.getY();
         }
 
         if(locA.getZ() > locB.getZ()) {
-            maxZ = locA.getZ();
+            maxZ = (int) locA.getZ();
         }
         else {
-            maxZ = locB.getZ();
+            maxZ = (int) locB.getZ();
         }
 
         Vector vectorOut = new Vector(maxX, maxY, maxZ);
@@ -120,9 +157,9 @@ public final class PluginPanzegoria extends JavaPlugin implements Listener {
     private Vector CalculateOffset(){
 
         Vector minVector = CalculateMinimums();
-        double offsetX = minVector.getX();
-        double offsetY = minVector.getY();
-        double offsetZ = minVector.getZ();
+        int offsetX = (int) minVector.getX();
+        int offsetY = (int) minVector.getY();
+        int offsetZ = (int) minVector.getZ();
 
         offsetX *= -1;
         offsetY *= -1;
@@ -136,8 +173,7 @@ public final class PluginPanzegoria extends JavaPlugin implements Listener {
     private void PerformCopy(Player player) {
         player.sendMessage(String.format("Copying Blocks between Location A and Location B"));
 
-
-
+        CreateTemplate(player);
 
         player.sendMessage(String.format("Found %s blocks", templateList.size()));
     }
@@ -150,50 +186,43 @@ public final class PluginPanzegoria extends JavaPlugin implements Listener {
             case "hint":
             {
                 try {
-                    if (blockList == null)
-                        blockList = new Hashtable<>(1);
+                    blockList = new ArrayList<>();
 
-                    //Location target = player.getLocation().add(player.getLocation().getDirection().add(new Vector(2,1,0)));
-                    /*
-                    double offsetX = (double) (locA.getX() - buildLoc.getX());
-                    double offsetY = (double) (locA.getY() - buildLoc.getY());
-                    double offsetZ = (double) (locA.getZ() - buildLoc.getZ());
-                    Location offset = new Location(player.getWorld(), offsetX, offsetY, offsetZ);
-                    */
-                    if(templateList == null) throw new Exception("templateList was null");
-                    if(buildLoc == null) throw new Exception("buildLocation was null");
-                    for (Location offsetLocation : templateList.keySet()
+                    for (Location loc: templateList.keySet()
                             ) {
 
-                        if(offsetLocation==null) throw new Exception("offsetLocation was null");
-                        player.sendMessage(String.format("creating target..."));
-                        Location target = buildLoc.subtract(offsetLocation);
+                        Location target = new Location(player.getWorld(), loc.getX() + buildLoc.getX(), loc.getY()+  buildLoc.getY(), loc.getZ() +  buildLoc.getZ());
+                        player.sendMessage(String.format("Calculating block at X: %s Y: %s Z: %s", target.getX(), target.getY(), target.getZ()));
 
-                        if(target == null) throw new Exception("target was null");
-                        player.sendMessage(String.format("target was created."));
+                        Block block = target.getBlock();
+                        Block originalBlock = templateList.get(loc);
 
-                        player.sendMessage(String.format("getting material..."));
-                        Material mat = templateList.get(offsetLocation);
-                        if(mat == null) throw new Exception("Material was null");
-                        player.sendMessage(String.format("material was retrieved."));
+                        block.setType(originalBlock.getType());
+                        block.setData(originalBlock.getData());
+                        block.getState().update();
+                        blockList.add(block);
+/*
 
-                        if(mat == null) throw new Exception("Target block material being set");
-                        target.getBlock().setType(mat);
-                        player.sendMessage(String.format("Material was set"));
+                        player.sendMessage(String.format("Block Type is %s", material.toString()));
 
+                        if(block.getType() == Material.AIR) {
+                            block.setType(material);
 
-                        blockList.putIfAbsent(target, mat);
+                            player.sendMessage(String.format("Adding block to destroy list"));
+                            blockList.put(target, material);
+                            player.sendMessage(String.format("Added"));
+                        }
+  */
                     }
 
                     //Location target = player.getLocation().add(player.getLocation().getDirection().add(new Vector(2,1,0)));
-                    player.sendMessage(String.format("Trying to schedule block breaking"));
                     this.getServer().getScheduler().scheduleSyncDelayedTask(this, () -> {
                         try {
                             if (blockList == null) throw new Exception("trying to destroy and blockList was null");
 
-                            for (Location loc : blockList.keySet()
+                            for (Block block : blockList
                                     ) {
-                                loc.getBlock().breakNaturally(new ItemStack(Material.AIR));
+                                block.setType(Material.AIR);
                             }
 
                             blockList = null;
@@ -201,6 +230,7 @@ public final class PluginPanzegoria extends JavaPlugin implements Listener {
                             player.sendMessage(ex.toString());
                         }
                     }, 160);
+
                 } catch (Exception ex) {
                     player.sendMessage(ex.toString());
                 }

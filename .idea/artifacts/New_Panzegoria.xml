@@ -3,7 +3,7 @@
     <output-path>C:/bukkit/plugins</output-path>
     <root id="archive" name="New-Panzegoria.jar">
       <element id="module-output" name="New-Panzegoria" />
-      <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+      <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
     </root>
   </artifact>
 </component>

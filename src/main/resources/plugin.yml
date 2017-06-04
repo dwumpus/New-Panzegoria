@@ -1,19 +1,7 @@
-name: New-Panzegoria
-main: PluginPanzegoria
-version: .01 Dev
+name: Blueprint
+main: BlueprintPlugin
+version: .02 Dev
 commands:
    hint:
-      description: This is a demo command.
-      usage: /<command>
-   copy:
-      description: This is a demo command.
-      usage: /<command>
-   marka:
-      description: This is a demo command.
-      usage: /<command>
-   markb:
-      description: This is a demo command.
-      usage: /<command>
-   markc:
       description: This is a demo command.
       usage: /<command>

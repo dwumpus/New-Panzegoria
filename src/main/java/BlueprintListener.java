@@ -2,8 +2,6 @@ import Controllers.Blueprint;
 import Entities.BlueprintState;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -36,7 +34,6 @@ public class BlueprintListener implements Listener {
         }
 
         final Player player = event.getPlayer();
-        final World world = player.getWorld();
 
         if(!BlueprintState.getInstance().GetPlayerState(player.getName()).IsDrafting){
             event.setCancelled(false);
@@ -55,7 +52,6 @@ public class BlueprintListener implements Listener {
             final Block clickedBlock = event.getClickedBlock();
 
             Blueprint.getInstance().SetRangePoint2(player, clickedBlock);
-
 
             event.setCancelled(true);
         }

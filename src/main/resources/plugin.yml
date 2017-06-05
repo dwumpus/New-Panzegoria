@@ -1,7 +1,13 @@
 name: Blueprint
 main: BlueprintPlugin
-version: .02 Dev
+version: .03 Dev
 commands:
    hint:
       description: This is a demo command.
       usage: /<command>
+   StartBlueprint:
+      description: Starts your blueprinting session
+      usage: /StartBlueprint
+   StopBlueprint:
+      description: Stops your blueprinting session
+      usage: /StopBlueprint

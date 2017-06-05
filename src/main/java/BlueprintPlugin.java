@@ -1,3 +1,6 @@
+import Commands.CommandStartBlueprint;
+import Commands.CommandStopBlueprint;
+import Entities.BlueprintState;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
@@ -8,15 +11,16 @@ import java.util.logging.Logger;
 public final class BlueprintPlugin extends JavaPlugin {
 
     public final static String PLUGIN_NAME = BlueprintPlugin.class.getCanonicalName();
-    private static BlueprintPlugin INSTANCE;
-
-    private static Logger logger = Logger.getLogger(PLUGIN_NAME);
+    public static BlueprintPlugin INSTANCE;
+    public static Logger logger = Logger.getLogger(PLUGIN_NAME);
 
     @Override
     public void onEnable() {
         logger.info("Enabling...");
         this.INSTANCE = this;
         getServer().getPluginManager().registerEvents(new BlueprintListener(), this);
+        this.getCommand("StartBlueprint").setExecutor(new CommandStartBlueprint());
+        this.getCommand("StopBlueprint").setExecutor(new CommandStopBlueprint());
         logger.info("Enabled");
     }
 /**

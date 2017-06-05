@@ -1,5 +1,9 @@
+import Controllers.Blueprint;
+import Entities.BlueprintState;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
@@ -12,8 +16,11 @@ import org.bukkit.inventory.EquipmentSlot;
  * Created by roger.boone on 6/4/2017.
  */
 public class BlueprintListener implements Listener {
+
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+
 
         if (event.useItemInHand() == Event.Result.DENY) {
             return;
@@ -31,17 +38,25 @@ public class BlueprintListener implements Listener {
         final Player player = event.getPlayer();
         final World world = player.getWorld();
 
+        if(!BlueprintState.getInstance().GetPlayerState(player.getName()).IsDrafting){
+            event.setCancelled(false);
+            return;
+        }
+
         Action action = event.getAction();
         if (action == Action.LEFT_CLICK_BLOCK) {
             final Block clickedBlock = event.getClickedBlock();
 
-            player.chat(String.format("you clicked on a block %s", clickedBlock.getType().toString()));
+            Blueprint.getInstance().SetRangePoint1(player, clickedBlock);
+
             event.setCancelled(true);
         }
         else if (action == Action.RIGHT_CLICK_BLOCK) {
             final Block clickedBlock = event.getClickedBlock();
 
-            player.chat(String.format("you right clicked on a block %s", clickedBlock.getType().toString()));
+            Blueprint.getInstance().SetRangePoint2(player, clickedBlock);
+
+
             event.setCancelled(true);
         }
     }

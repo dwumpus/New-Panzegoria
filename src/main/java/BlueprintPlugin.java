@@ -3,10 +3,10 @@ import Commands.CommandEnableDrafting;
 import Commands.CommandDisableDrafting;
 import Controllers.BlueprintService;
 import Controllers.PlayerManager;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 /**
@@ -19,7 +19,8 @@ public final class BlueprintPlugin extends JavaPlugin {
     public static BlueprintService BP_INSTANCE;
     public static PlayerManager BP_STATE;
     public static Logger logger = Logger.getLogger(PLUGIN_NAME);
-    public static HashMap<String, String> CONFIG;
+    public FileConfiguration config = getConfig();
+    public static ItemStack configuredDraftingTool;
 
     @Override
     public void onEnable() {
@@ -28,8 +29,17 @@ public final class BlueprintPlugin extends JavaPlugin {
         this.BP_STATE = new PlayerManager();
         this.BP_INSTANCE = new BlueprintService(BP_STATE);
 
+        configuredDraftingTool = (ItemStack) config.get("Tools.Drafting");
 
-        getServer().getPluginManager().registerEvents(new BlueprintMouseActionListener(BP_INSTANCE, BP_STATE), this);
+        if(configuredDraftingTool == null) {
+            config.addDefault("Tools.Drafting", new ItemStack(Material.STICK));
+            config.options().copyDefaults(true);
+            saveConfig();
+            configuredDraftingTool = (ItemStack)config.get("Tools.Drafting");
+        }
+
+
+        getServer().getPluginManager().registerEvents(new BlueprintMouseActionListener(BP_INSTANCE, BP_STATE, configuredDraftingTool), this);
 
         this.getCommand("BPEnable").setExecutor(new CommandEnableDrafting(BP_STATE));
         this.getCommand("BPDisable").setExecutor(new CommandDisableDrafting(BP_STATE));
@@ -283,7 +293,4 @@ public final class BlueprintPlugin extends JavaPlugin {
         logger.info("Blueprinting plugin is loaded.");
     }
 
-    private void CheckConfig() {
-
-    }
 }

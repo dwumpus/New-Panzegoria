@@ -39,12 +39,12 @@ public class TestBlueprintMouseActionListener {
     PlayerManager playerManager;
     PlayerState playerState;
     ItemStack configuredItem;
-    ItemStack notConfiguredItem;
     PlayerInventory inventory;
 
     private void initializeMocks() {
         //mock all the minecraft items involved
         World world = PowerMockito.mock(World.class);
+
         configuredItem = mock(ItemStack.class);
         when(configuredItem.getType()).thenReturn(Material.STICK);
         when(configuredItem.toString()).thenReturn(Material.STICK.toString());
@@ -69,7 +69,7 @@ public class TestBlueprintMouseActionListener {
         playerState = new PlayerState("TestPlayer", true);
         playerManager.SetPlayerState(playerState);
         blueprintService = new BlueprintService(playerManager);
-        blueprintMouseActionListener = new BlueprintMouseActionListener(blueprintService, playerManager);
+        blueprintMouseActionListener = new BlueprintMouseActionListener(blueprintService, playerManager,configuredItem);
     }
 
     @Test
@@ -115,7 +115,7 @@ public class TestBlueprintMouseActionListener {
         when(event.getAction()).thenReturn(Action.LEFT_CLICK_BLOCK);
         when(event.getClickedBlock()).thenReturn(block);
 
-        playerState = new PlayerState("TestPlayer", false);
+        playerState = new PlayerState(player.getName(), false);
         playerManager.SetPlayerState(playerState);
 
         //act

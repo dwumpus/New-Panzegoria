@@ -18,10 +18,12 @@ public class BlueprintMouseActionListener implements Listener {
 
     private BlueprintService _blueprintService;
     private PlayerManager _playerManager;
+    private ItemStack _configuredDraftingTool;
 
-    public BlueprintMouseActionListener(BlueprintService blueprintService, PlayerManager playerManager) {
+    public BlueprintMouseActionListener(BlueprintService blueprintService, PlayerManager playerManager, ItemStack configuredDraftingTool) {
         this._blueprintService = blueprintService;
         this._playerManager = playerManager;
+        _configuredDraftingTool = configuredDraftingTool;
     }
 
     @EventHandler
@@ -47,13 +49,11 @@ public class BlueprintMouseActionListener implements Listener {
             return;
         }
 
-        ItemStack configuredItem = new ItemStack(Material.STICK);
-
         Action action = event.getAction();
         if (action == Action.LEFT_CLICK_BLOCK) {
             if(player.getInventory() == null || player.getInventory().getItemInMainHand() == null) return;
 
-            if(player.getInventory().getItemInMainHand().getType() == configuredItem.getType()){
+            if(player.getInventory().getItemInMainHand().getType() == _configuredDraftingTool.getType()){
                 final Block clickedBlock = event.getClickedBlock();
 
                 _blueprintService.SetRangePoint1(player, clickedBlock);
@@ -64,7 +64,7 @@ public class BlueprintMouseActionListener implements Listener {
         else if (action == Action.RIGHT_CLICK_BLOCK) {
             if(player.getInventory() == null || player.getInventory().getItemInMainHand() == null) return;
 
-            if(player.getInventory().getItemInMainHand().getType() == configuredItem.getType()) {
+            if(player.getInventory().getItemInMainHand().getType() == _configuredDraftingTool.getType()) {
                 final Block clickedBlock = event.getClickedBlock();
 
                 _blueprintService.SetRangePoint2(player, clickedBlock);

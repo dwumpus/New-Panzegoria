@@ -6,9 +6,8 @@ import java.util.List;
 /**
  * Created by roger.boone on 6/4/2017.
  */
-public class BlueprintState {
-    private static BlueprintState ourInstance = new BlueprintState();
-    private static List<PlayerState> playersState = new ArrayList<>();
+public class PlayerManager {
+    private List<PlayerState> playersState;
 
     public void SetPlayerState(PlayerState state) {
         playersState.removeIf((PlayerState p) -> p.Name.equalsIgnoreCase(state.Name));
@@ -23,13 +22,10 @@ public class BlueprintState {
             }
         }
 
-        return new PlayerState(name, false);
+        return new PlayerState(name, true);
     }
 
-    public static BlueprintState getInstance() {
-        return ourInstance;
-    }
-
-    private BlueprintState() {
+    public PlayerManager() {
+        playersState = new ArrayList<>();
     }
 }

@@ -12,7 +12,7 @@ public class PlayerState {
     }
 
     public String Name = "";
-    public boolean IsDrafting = false;
+    public boolean IsDrafting = true;
     public Vector Point1;
     public Vector Point2;
     public Selection SelectedLocations;

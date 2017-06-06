@@ -1,13 +1,16 @@
 name: Blueprint
 main: BlueprintPlugin
-version: .03 Dev
+version: .04 Dev
 commands:
    hint:
       description: This is a demo command.
       usage: /<command>
-   StartBlueprint:
+   BPEnable:
       description: Starts your blueprinting session
-      usage: /StartBlueprint
-   StopBlueprint:
+      usage: /BPEnable
+   BPDisable:
       description: Stops your blueprinting session
-      usage: /StopBlueprint
+      usage: /BPDisable
+   BlueprintState:
+      description: Gets information about your current blueprint session
+      usage: /BlueprintState

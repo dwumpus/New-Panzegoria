@@ -13,12 +13,18 @@ public class Selection {
     private World _world;
 
     private Location ComputeMinLocation (Vector point1, Vector point2) {
+        if(point1== null) return new Location(_world, point2.getX(),point2.getY(),point2.getZ());
+        if(point2== null) return new Location(_world, point1.getX(),point1.getY(),point1.getZ());
+
         return new Location(_world, (point1.getX() < point2.getX()) ? point1.getX() : point2.getX(),
                 (point1.getY() < point2.getY()) ? point1.getY() : point2.getY(),
                 (point1.getZ() < point2.getZ()) ? point1.getZ() : point2.getZ());
     }
 
     private Location ComputeMaxLocation (Vector point1, Vector point2) {
+        if(point1== null) return new Location(_world, point2.getX(),point2.getY(),point2.getZ());
+        if(point2== null) return new Location(_world, point1.getX(),point1.getY(),point1.getZ());
+
         return new Location(_world, (point1.getX() > point2.getX()) ? point1.getX() : point2.getX(),
                 (point1.getY() > point2.getY()) ? point1.getY() : point2.getY(),
                 (point1.getZ() > point2.getZ()) ? point1.getZ() : point2.getZ());

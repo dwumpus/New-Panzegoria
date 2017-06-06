@@ -1,5 +1,5 @@
 import Controllers.BlueprintService;
-import Entities.PlayerManager;
+import Controllers.PlayerManager;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;

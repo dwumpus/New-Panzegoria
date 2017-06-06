@@ -2,7 +2,7 @@
  * Created by roger.boone on 6/5/2017.
  */
 import Controllers.BlueprintService;
-import Entities.PlayerManager;
+import Controllers.PlayerManager;
 import Entities.PlayerState;
 import org.bukkit.Location;
 import org.bukkit.Material;

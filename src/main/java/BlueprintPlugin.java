@@ -2,9 +2,11 @@ import Commands.CommandBlueprintState;
 import Commands.CommandEnableDrafting;
 import Commands.CommandDisableDrafting;
 import Controllers.BlueprintService;
-import Entities.PlayerManager;
+import Controllers.PlayerManager;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 /**
@@ -17,6 +19,7 @@ public final class BlueprintPlugin extends JavaPlugin {
     public static BlueprintService BP_INSTANCE;
     public static PlayerManager BP_STATE;
     public static Logger logger = Logger.getLogger(PLUGIN_NAME);
+    public static HashMap<String, String> CONFIG;
 
     @Override
     public void onEnable() {
@@ -24,6 +27,7 @@ public final class BlueprintPlugin extends JavaPlugin {
         this.INSTANCE = this;
         this.BP_STATE = new PlayerManager();
         this.BP_INSTANCE = new BlueprintService(BP_STATE);
+
 
         getServer().getPluginManager().registerEvents(new BlueprintMouseActionListener(BP_INSTANCE, BP_STATE), this);
 
@@ -277,5 +281,9 @@ public final class BlueprintPlugin extends JavaPlugin {
     @Override
     public void onLoad() {
         logger.info("Blueprinting plugin is loaded.");
+    }
+
+    private void CheckConfig() {
+
     }
 }

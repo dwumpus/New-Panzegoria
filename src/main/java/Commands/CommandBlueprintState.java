@@ -1,6 +1,6 @@
 package Commands;
 
-import Entities.PlayerManager;
+import Controllers.PlayerManager;
 import Entities.PlayerState;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

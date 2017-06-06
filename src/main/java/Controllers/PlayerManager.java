@@ -1,4 +1,6 @@
-package Entities;
+package Controllers;
+
+import Entities.PlayerState;
 
 import java.util.ArrayList;
 import java.util.List;

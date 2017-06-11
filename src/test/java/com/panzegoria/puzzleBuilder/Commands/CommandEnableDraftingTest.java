@@ -1,10 +1,8 @@
-package Commands;
+package com.panzegoria.puzzleBuilder.Commands;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by roger.boone on 6/6/2017.

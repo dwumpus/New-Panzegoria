@@ -8,11 +8,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Blueprint" />
         <module name="New-Panzegoria" />
+        <module name="PuzzleBuilder" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="Blueprint" target="1.8" />
       <module name="New-Panzegoria" target="1.8" />
+      <module name="PuzzleBuilder" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

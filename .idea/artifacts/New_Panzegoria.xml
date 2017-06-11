@@ -2,7 +2,7 @@
   <artifact type="jar" build-on-make="true" name="New-Panzegoria">
     <output-path>C:/bukkit/plugins</output-path>
     <root id="archive" name="New-Panzegoria.jar">
-      <element id="module-output" name="Blueprint" />
+      <element id="module-output" name="PuzzleBuilder" />
       <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/plugin.yml" />
     </root>
   </artifact>

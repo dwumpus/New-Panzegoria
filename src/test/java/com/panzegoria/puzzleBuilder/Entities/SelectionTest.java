@@ -1,5 +1,5 @@
-import Entities.Selection;
-import org.bukkit.Location;
+package com.panzegoria.puzzleBuilder.Entities;
+
 import org.bukkit.World;
 import org.bukkit.util.Vector;
 import org.junit.Test;
@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(World.class)
-public class TestSelection {
+public class SelectionTest {
 
     private Vector point1 = new Vector(1,10,-3);
     private Vector point2 = new Vector(10,5,22);
@@ -27,7 +27,7 @@ public class TestSelection {
         //arrange
 
         //act
-        Selection selection = new Selection(world,point1,point2);
+        Selection selection = new Selection();
 
         //assert
         assertTrue("Instanced Correctly",selection instanceof Selection);
@@ -36,11 +36,13 @@ public class TestSelection {
     @Test
     public void testGetMin (){
         //arrange
-        Selection selection = new Selection(world,point1,point2);
+        Selection selection = new Selection();
+        selection.setPoint1(point1);
+        selection.setPoint2(point2);
 
         //act
-        Location minLocation = selection.getMinlocation();
-        Vector locationVector = minLocation.toVector();
+        Vector minLocation = selection.getMinVector();
+        Vector locationVector = minLocation;
 
         //assert
         Vector idealResult = new Vector(1,5,-3);
@@ -50,14 +52,16 @@ public class TestSelection {
     @Test
     public void testGetMax (){
         //arrange
-        Selection selection = new Selection(world,point1,point2);
+        Selection selection = new Selection();
+        selection.setPoint1(point1);
+        selection.setPoint2(point2);
 
         //act
-        Location maxLocation = selection.getMaxlocation();
-        Vector locationVector = maxLocation.toVector();
+        Vector maxLocation = selection.getMaxVector();
+        Vector locationVector = maxLocation;
 
         //assert
-        Vector idealResult = new Vector(10,10,22);
+        Vector idealResult = new Vector(11,12,23);
         assertEquals(idealResult, locationVector);
     }
 }

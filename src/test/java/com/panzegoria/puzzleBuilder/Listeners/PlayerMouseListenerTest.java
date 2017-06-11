@@ -1,9 +1,8 @@
-/**
+package com.panzegoria.puzzleBuilder.Listeners; /**
  * Created by roger.boone on 6/5/2017.
  */
-import Controllers.BlueprintService;
-import Controllers.PlayerManager;
-import Entities.PlayerState;
+import com.panzegoria.puzzleBuilder.Entities.PlayersState;
+import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -13,12 +12,16 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.util.Vector;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+
+import java.util.HashMap;
+
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -28,48 +31,48 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Player.class, PlayerInteractEvent.class, PlayerInventory.class})
-public class TestBlueprintMouseActionListener {
+public class PlayerMouseListenerTest {
 
     PlayerInteractEvent event;
     Player player;
-    BlueprintMouseActionListener blueprintMouseActionListener;
-    BlueprintService blueprintService;
+    PlayerMouseListener playerMouseListener;
     Block block;
     Block block2;
-    PlayerManager playerManager;
-    PlayerState playerState;
-    ItemStack configuredItem;
+    WrappedPlayer wrappedPlayer;
+    Material configuredItem;
     PlayerInventory inventory;
+    PlayersState playerState;
+    Vector point1;
+    Vector point2;
 
     private void initializeMocks() {
         //mock all the minecraft items involved
         World world = PowerMockito.mock(World.class);
+        playerState = new PlayersState();
 
-        configuredItem = mock(ItemStack.class);
-        when(configuredItem.getType()).thenReturn(Material.STICK);
-        when(configuredItem.toString()).thenReturn(Material.STICK.toString());
-        when(configuredItem.hasItemMeta()).thenReturn(false);
-
-        inventory = mock(PlayerInventory.class);
-        when(inventory.getItemInMainHand()).thenReturn(configuredItem);
+        configuredItem = Material.STICK;
+        point1 = new Vector(10,4,-2);
+        point2 = new Vector(110, -24, 22);
 
         block = PowerMockito.mock(Block.class);
-        when(block.getLocation()).thenReturn(new Location(world, 10, 4, -2));
+        when(block.getLocation()).thenReturn(new Location(world,point1.getX(),point1.getY(),point1.getZ()));
         when(block.getType()).thenReturn(Material.STONE);
 
         block2 = PowerMockito.mock(Block.class);
-        when(block2.getLocation()).thenReturn(new Location(world, 110, -24, 22));
+        when(block2.getLocation()).thenReturn(new Location(world, point2.getX(),point2.getY(),point2.getZ()));
         when(block2.getType()).thenReturn(Material.STONE);
+
+        inventory = PowerMockito.mock(PlayerInventory.class);
+        when(inventory.getItemInMainHand()).thenReturn(new ItemStack(configuredItem));
 
         player = PowerMockito.mock(Player.class);
         when(player.getName()).thenReturn("TestPlayer");
         when(player.getInventory()).thenReturn(inventory);
 
-        playerManager = new PlayerManager();
-        playerState = new PlayerState("TestPlayer", true);
-        playerManager.SetPlayerState(playerState);
-        blueprintService = new BlueprintService(playerManager);
-        blueprintMouseActionListener = new BlueprintMouseActionListener(blueprintService, playerManager,configuredItem);
+        wrappedPlayer = new WrappedPlayer(player, playerState);
+        wrappedPlayer.Save();
+
+        playerMouseListener = new PlayerMouseListener(Material.STICK, playerState);
     }
 
     @Test
@@ -82,11 +85,11 @@ public class TestBlueprintMouseActionListener {
         when(event.getClickedBlock()).thenReturn(block);
 
         //act
-        blueprintMouseActionListener.onPlayerInteract(event);
-        PlayerState state = playerManager.GetPlayerState(player.getName());
+        playerMouseListener.onPlayerInteract(event);
+        Vector point = playerState.get(player.getName()).Selection.getMinVector();
 
         //assert
-        Assert.assertTrue(state.Point1.getX()==10);
+        Assert.assertTrue(point.getX()==10);
     }
 
     @Test
@@ -99,11 +102,11 @@ public class TestBlueprintMouseActionListener {
         when(event.getClickedBlock()).thenReturn(block);
 
         //act
-        blueprintMouseActionListener.onPlayerInteract(event);
-        PlayerState state = playerManager.GetPlayerState(player.getName());
+        playerMouseListener.onPlayerInteract(event);
+        Vector point = playerState.get(player.getName()).Selection.getPoint1();
 
         //assert
-        Assert.assertTrue(state.Point1 == null);
+        Assert.assertTrue(point == null);
     }
 
     @Test
@@ -115,31 +118,41 @@ public class TestBlueprintMouseActionListener {
         when(event.getAction()).thenReturn(Action.LEFT_CLICK_BLOCK);
         when(event.getClickedBlock()).thenReturn(block);
 
-        playerState = new PlayerState(player.getName(), false);
-        playerManager.SetPlayerState(playerState);
+        wrappedPlayer = playerState.get(player.getName());
+        wrappedPlayer.Selection.setPoint1(new Vector(0,0,0));
+        wrappedPlayer.Save();
 
         //act
-        blueprintMouseActionListener.onPlayerInteract(event);
-        PlayerState state = playerManager.GetPlayerState(player.getName());
+        playerMouseListener.onPlayerInteract(event);
+        Vector point = playerState.get(player.getName()).Selection.getPoint1();
 
         //assert
-        Assert.assertTrue(state.Point1 == null);
+        Assert.assertTrue(point.getX() == 0);
     }
 
     @Test
     public void testRightClick() {
         //arrange
         initializeMocks();
+
+        //setup the mouseclick
         event = PowerMockito.mock(PlayerInteractEvent.class);
         when(event.getPlayer()).thenReturn(player);
         when(event.getAction()).thenReturn(Action.RIGHT_CLICK_BLOCK);
         when(event.getClickedBlock()).thenReturn(block2);
 
         //act
-        blueprintMouseActionListener.onPlayerInteract(event);
-        PlayerState state = playerManager.GetPlayerState(player.getName());
+        wrappedPlayer.Selection.setPoint1(point1);
+        wrappedPlayer.Save();
+        wrappedPlayer = playerState.get(player.getName());
+
+        //click the mouse button
+        playerMouseListener.onPlayerInteract(event);
+
+        //get the results
+        Vector point = wrappedPlayer.Selection.getMaxVector();
 
         //assert
-        Assert.assertTrue(state.SelectedLocations.getMaxlocation().getX()==110);
+        Assert.assertTrue(point.getX()==111);
     }
 }

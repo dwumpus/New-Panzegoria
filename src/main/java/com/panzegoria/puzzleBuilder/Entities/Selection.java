@@ -1,5 +1,6 @@
 package com.panzegoria.puzzleBuilder.Entities;
 
+import org.bukkit.World;
 import org.bukkit.util.Vector;
 
 
@@ -50,4 +51,5 @@ public class Selection implements ISelection {
     public void setPoint2(Vector point2) {
         this.point2 = point2;
     }
+
 }

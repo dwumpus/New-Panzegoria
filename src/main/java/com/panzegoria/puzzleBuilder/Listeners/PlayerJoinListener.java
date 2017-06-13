@@ -24,8 +24,8 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player joinedPlayer = event.getPlayer();
-        _state.putIfAbsent(joinedPlayer.getName(),
-                new WrappedPlayer(joinedPlayer, _state));
+        WrappedPlayer wrappedPlayer = new WrappedPlayer(joinedPlayer, _state);
+        _state.savePlayerState(wrappedPlayer);
     }
 
 }

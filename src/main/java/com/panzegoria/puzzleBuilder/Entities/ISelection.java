@@ -17,4 +17,5 @@ public interface ISelection {
     Vector getPoint2();
 
     void setPoint2(Vector point2);
+
 }

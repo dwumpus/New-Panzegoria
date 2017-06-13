@@ -1,17 +1,21 @@
 package com.panzegoria.puzzleBuilder;
 
-import com.panzegoria.puzzleBuilder.Commands.CommandDisableDrafting;
-import com.panzegoria.puzzleBuilder.Commands.CommandEnableDrafting;
+import com.panzegoria.puzzleBuilder.Commands.CommandBlueprintDisable;
+import com.panzegoria.puzzleBuilder.Commands.CommandBlueprintEnable;
+import com.panzegoria.puzzleBuilder.Commands.CommandBlueprintSave;
 import com.panzegoria.puzzleBuilder.Commands.CommandRotate;
 import com.panzegoria.puzzleBuilder.Entities.PlayersState;
 import com.panzegoria.puzzleBuilder.Listeners.PlaceBlockOnHintListener;
 import com.panzegoria.puzzleBuilder.Listeners.PlayerJoinListener;
 import com.panzegoria.puzzleBuilder.Listeners.PlayerMouseListener;
+import com.panzegoria.puzzleBuilder.Services.BlockService;
+import com.panzegoria.puzzleBuilder.Services.IBlockService;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
 import java.util.logging.Logger;
 
 /**
@@ -25,12 +29,14 @@ public final class PuzzleBuilderPlugin extends JavaPlugin {
     public static Logger logger = Logger.getLogger(PLUGIN_NAME);
     public static ItemStack configuredDraftingTool;
     public FileConfiguration config = getConfig();
+    public IBlockService blockService;
 
     @Override
     public void onEnable() {
         logger.info("Blueprinting is being enabling...");
         this.INSTANCE = this;
         this.playerState = new PlayersState();
+        blockService = new BlockService();
 
         configuredDraftingTool = (ItemStack) config.get("Tools.Drafting");
 
@@ -45,9 +51,10 @@ public final class PuzzleBuilderPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlaceBlockOnHintListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerState), this);
 
-        this.getCommand("BPEnable").setExecutor(new CommandEnableDrafting(playerState));
-        this.getCommand("BPDisable").setExecutor(new CommandDisableDrafting(playerState));
+        this.getCommand("BlueprintEnable").setExecutor(new CommandBlueprintEnable(playerState));
+        this.getCommand("BlueprintDisable").setExecutor(new CommandBlueprintDisable(playerState));
         this.getCommand("Rotate").setExecutor(new CommandRotate(playerState));
+        this.getCommand("Save").setExecutor(new CommandBlueprintSave(blockService, playerState, getDataFolder()));
         logger.info("Blueprinting plugin enabled!");
     }
 

@@ -7,18 +7,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
 /**
  * Created by roger.boone on 6/4/2017.
  */
-public class CommandEnableDrafting implements CommandExecutor {
-
+public class CommandBlueprintDisable implements CommandExecutor {
     PlayersState _playerState;
 
-    public CommandEnableDrafting(PlayersState playerState) {
+    public CommandBlueprintDisable(PlayersState playerState) {
         _playerState = playerState;
     }
 
@@ -27,9 +25,10 @@ public class CommandEnableDrafting implements CommandExecutor {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
 
-            WrappedPlayer state = _playerState.get(player.getName());
-            state.IsDrafting = true;
+            WrappedPlayer state = _playerState.getState(player.getName());
+            state.IsDrafting = false;
             state.Save();
+            player.sendMessage("Your ability to draft new blueprints has been disabled.");
             return true;
         }
 

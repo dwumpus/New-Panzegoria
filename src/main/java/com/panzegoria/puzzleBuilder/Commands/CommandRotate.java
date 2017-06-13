@@ -1,5 +1,6 @@
 package com.panzegoria.puzzleBuilder.Commands;
 
+import com.panzegoria.puzzleBuilder.Entities.DIRECTION;
 import com.panzegoria.puzzleBuilder.Entities.PlayersState;
 import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
 import com.panzegoria.puzzleBuilder.PuzzleBuilderPlugin;
@@ -27,7 +28,7 @@ public class CommandRotate implements CommandExecutor {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
 
-            WrappedPlayer state = _playerState.get(player.getName());
+            WrappedPlayer state = _playerState.getState(player.getName());
             state.Direction = getRotation(state.Direction);
             state.Save();
             player.sendMessage(String.format("New Build Direction %s", state.Direction.toString()));
@@ -36,22 +37,22 @@ public class CommandRotate implements CommandExecutor {
         return false;
     }
 
-    private BlockService.DIRECTION getRotation(BlockService.DIRECTION currentDirection) {
+    private DIRECTION getRotation(DIRECTION currentDirection) {
         switch (currentDirection) {
             case NORTH_EAST: {
-                return BlockService.DIRECTION.SOUTH_EAST;
+                return DIRECTION.SOUTH_EAST;
             }
             case SOUTH_EAST: {
-                return BlockService.DIRECTION.SOUTH_WEST;
+                return DIRECTION.SOUTH_WEST;
             }
             case SOUTH_WEST: {
-                return BlockService.DIRECTION.NORTH_WEST;
+                return DIRECTION.NORTH_WEST;
             }
             case NORTH_WEST: {
-                return BlockService.DIRECTION.NORTH_EAST;
+                return DIRECTION.NORTH_EAST;
             }
             default:
-                return BlockService.DIRECTION.NORTH_EAST;
+                return DIRECTION.NORTH_EAST;
         }
     }
 }

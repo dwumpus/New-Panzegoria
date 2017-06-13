@@ -44,8 +44,7 @@ public class PlayerMouseListener implements Listener {
         }
 
         final Player player = event.getPlayer();
-        WrappedPlayer puzzlePlayer = _stateContainer.getOrDefault(player.getName(),
-                new WrappedPlayer(player,_stateContainer)); //make one if it doesn't have one
+        WrappedPlayer puzzlePlayer = _stateContainer.getState(player.getName()); //make one if it doesn't have one
 
         if (!(puzzlePlayer).IsDrafting){
             event.setCancelled(false);

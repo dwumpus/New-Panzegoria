@@ -86,7 +86,7 @@ public class PlayerMouseListenerTest {
 
         //act
         playerMouseListener.onPlayerInteract(event);
-        Vector point = playerState.get(player.getName()).Selection.getMinVector();
+        Vector point = playerState.getState(player.getName()).Selection.getMinVector();
 
         //assert
         Assert.assertTrue(point.getX()==10);
@@ -103,7 +103,7 @@ public class PlayerMouseListenerTest {
 
         //act
         playerMouseListener.onPlayerInteract(event);
-        Vector point = playerState.get(player.getName()).Selection.getPoint1();
+        Vector point = playerState.getState(player.getName()).Selection.getPoint1();
 
         //assert
         Assert.assertTrue(point == null);
@@ -118,13 +118,14 @@ public class PlayerMouseListenerTest {
         when(event.getAction()).thenReturn(Action.LEFT_CLICK_BLOCK);
         when(event.getClickedBlock()).thenReturn(block);
 
-        wrappedPlayer = playerState.get(player.getName());
+        wrappedPlayer = playerState.getState(player.getName());
         wrappedPlayer.Selection.setPoint1(new Vector(0,0,0));
+        wrappedPlayer.IsDrafting=false;
         wrappedPlayer.Save();
 
         //act
         playerMouseListener.onPlayerInteract(event);
-        Vector point = playerState.get(player.getName()).Selection.getPoint1();
+        Vector point = playerState.getState(player.getName()).Selection.getPoint1();
 
         //assert
         Assert.assertTrue(point.getX() == 0);
@@ -144,7 +145,7 @@ public class PlayerMouseListenerTest {
         //act
         wrappedPlayer.Selection.setPoint1(point1);
         wrappedPlayer.Save();
-        wrappedPlayer = playerState.get(player.getName());
+        wrappedPlayer = playerState.getState(player.getName());
 
         //click the mouse button
         playerMouseListener.onPlayerInteract(event);

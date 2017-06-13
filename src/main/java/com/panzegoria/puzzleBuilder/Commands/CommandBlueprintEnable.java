@@ -1,5 +1,6 @@
 package com.panzegoria.puzzleBuilder.Commands;
 
+import com.panzegoria.puzzleBuilder.Entities.IPlayersState;
 import com.panzegoria.puzzleBuilder.Entities.PlayersState;
 import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
 import com.panzegoria.puzzleBuilder.PuzzleBuilderPlugin;
@@ -7,16 +8,18 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
 
 /**
  * Created by roger.boone on 6/4/2017.
  */
-public class CommandDisableDrafting implements CommandExecutor {
-    PlayersState _playerState;
+public class CommandBlueprintEnable implements CommandExecutor {
 
-    public CommandDisableDrafting(PlayersState playerState) {
+    IPlayersState _playerState;
+
+    public CommandBlueprintEnable(IPlayersState playerState) {
         _playerState = playerState;
     }
 
@@ -25,10 +28,9 @@ public class CommandDisableDrafting implements CommandExecutor {
         if (commandSender instanceof Player) {
             Player player = (Player) commandSender;
 
-            WrappedPlayer state = _playerState.get(player.getName());
-            state.IsDrafting = false;
+            WrappedPlayer state = _playerState.getState(player.getName());
+            state.IsDrafting = true;
             state.Save();
-            player.sendMessage("Your ability to draft new blueprints has been disabled.");
             return true;
         }
 

@@ -2,10 +2,7 @@ package com.panzegoria.puzzleBuilder.Entities;
 
 import org.bukkit.World;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by roger.boone on 6/11/2017.
@@ -72,6 +69,7 @@ public class WrappedBlockSet {
         return valueOut;
     }
 
+    @org.jetbrains.annotations.NotNull
     private Vector toVector(String parsedValueIn) {
         String[] values = parsedValueIn.split(",");
 

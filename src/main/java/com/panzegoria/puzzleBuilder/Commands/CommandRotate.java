@@ -1,6 +1,7 @@
 package com.panzegoria.puzzleBuilder.Commands;
 
 import com.panzegoria.puzzleBuilder.Entities.DIRECTION;
+import com.panzegoria.puzzleBuilder.Entities.IPlayersState;
 import com.panzegoria.puzzleBuilder.Entities.PlayersState;
 import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
 import com.panzegoria.puzzleBuilder.PuzzleBuilderPlugin;
@@ -17,9 +18,9 @@ import java.util.HashMap;
  */
 public class CommandRotate implements CommandExecutor {
 
-    PlayersState _playerState;
+    IPlayersState _playerState;
 
-    public CommandRotate(PlayersState playerState) {
+    public CommandRotate(IPlayersState playerState) {
         _playerState = playerState;
     }
 

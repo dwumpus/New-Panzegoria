@@ -1,5 +1,7 @@
 package com.panzegoria.puzzleBuilder.Listeners;
 
+import com.panzegoria.puzzleBuilder.Entities.IPlayersState;
+import com.panzegoria.puzzleBuilder.Entities.MODE;
 import com.panzegoria.puzzleBuilder.Entities.PlayersState;
 import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
 import org.bukkit.Material;
@@ -17,12 +19,12 @@ import java.util.HashMap;
 /**
  * Created by roger.boone on 6/4/2017.
  */
-public class PlayerMouseListener implements Listener {
+public class ModelNewBuildingListener implements Listener {
 
     private Material _configuredDraftingTool;
-    private PlayersState _stateContainer;
+    private IPlayersState _stateContainer;
 
-    public PlayerMouseListener(Material configuredDraftingTool, PlayersState stateContainer) {
+    public ModelNewBuildingListener(Material configuredDraftingTool, IPlayersState stateContainer) {
         _configuredDraftingTool = configuredDraftingTool;
         _stateContainer = stateContainer;
     }
@@ -46,7 +48,7 @@ public class PlayerMouseListener implements Listener {
         final Player player = event.getPlayer();
         WrappedPlayer puzzlePlayer = _stateContainer.getState(player.getName()); //make one if it doesn't have one
 
-        if (!(puzzlePlayer).IsDrafting){
+        if ((puzzlePlayer).Mode!= MODE.MODEL_NEW_BUILDING){
             event.setCancelled(false);
             return;
         }

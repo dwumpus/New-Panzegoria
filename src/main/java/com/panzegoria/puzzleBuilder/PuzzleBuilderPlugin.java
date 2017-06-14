@@ -1,13 +1,15 @@
 package com.panzegoria.puzzleBuilder;
 
-import com.panzegoria.puzzleBuilder.Commands.CommandBlueprintDisable;
-import com.panzegoria.puzzleBuilder.Commands.CommandBlueprintEnable;
-import com.panzegoria.puzzleBuilder.Commands.CommandBlueprintSave;
+import com.panzegoria.puzzleBuilder.Commands.CommandLoad;
+import com.panzegoria.puzzleBuilder.Commands.CommandSave;
 import com.panzegoria.puzzleBuilder.Commands.CommandRotate;
+import com.panzegoria.puzzleBuilder.Commands.CommandToggleMode;
+import com.panzegoria.puzzleBuilder.Entities.IPlayersState;
 import com.panzegoria.puzzleBuilder.Entities.PlayersState;
-import com.panzegoria.puzzleBuilder.Listeners.PlaceBlockOnHintListener;
+import com.panzegoria.puzzleBuilder.Listeners.BuildPuzzleListener;
 import com.panzegoria.puzzleBuilder.Listeners.PlayerJoinListener;
-import com.panzegoria.puzzleBuilder.Listeners.PlayerMouseListener;
+import com.panzegoria.puzzleBuilder.Listeners.ModelNewBuildingListener;
+import com.panzegoria.puzzleBuilder.Listeners.SetupPuzzleListener;
 import com.panzegoria.puzzleBuilder.Services.BlockService;
 import com.panzegoria.puzzleBuilder.Services.IBlockService;
 import org.bukkit.Material;
@@ -15,7 +17,6 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 /**
@@ -25,7 +26,7 @@ public final class PuzzleBuilderPlugin extends JavaPlugin {
 
     public final static String PLUGIN_NAME = PuzzleBuilderPlugin.class.getCanonicalName();
     public static PuzzleBuilderPlugin INSTANCE;
-    private PlayersState playerState;
+    private IPlayersState playerState;
     public static Logger logger = Logger.getLogger(PLUGIN_NAME);
     public static ItemStack configuredDraftingTool;
     public FileConfiguration config = getConfig();
@@ -47,14 +48,25 @@ public final class PuzzleBuilderPlugin extends JavaPlugin {
             configuredDraftingTool = (ItemStack) config.get("Tools.Drafting");
         }
 
-        getServer().getPluginManager().registerEvents(new PlayerMouseListener(configuredDraftingTool.getType(), playerState), this);
-        getServer().getPluginManager().registerEvents(new PlaceBlockOnHintListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(playerState), this);
+        getServer().getPluginManager().registerEvents(
+                new BuildPuzzleListener(), this);
+        getServer().getPluginManager().registerEvents(
+                new ModelNewBuildingListener(configuredDraftingTool.getType(), playerState), this);
+        getServer().getPluginManager().registerEvents(
+                new PlayerJoinListener(playerState), this);
+        getServer().getPluginManager().registerEvents(
+                new SetupPuzzleListener(configuredDraftingTool.getType(),playerState, blockService), this);
 
-        this.getCommand("BlueprintEnable").setExecutor(new CommandBlueprintEnable(playerState));
-        this.getCommand("BlueprintDisable").setExecutor(new CommandBlueprintDisable(playerState));
-        this.getCommand("Rotate").setExecutor(new CommandRotate(playerState));
-        this.getCommand("Save").setExecutor(new CommandBlueprintSave(blockService, playerState, getDataFolder()));
+
+        this.getCommand("Rotate").setExecutor(
+                new CommandRotate(playerState));
+        this.getCommand("Save").setExecutor(
+                new CommandSave(blockService, playerState, getDataFolder()));
+        this.getCommand("Load").setExecutor(
+                new CommandLoad(playerState, getDataFolder()));
+        this.getCommand("ToggleMode").setExecutor(
+                new CommandToggleMode(playerState));
+
         logger.info("Blueprinting plugin enabled!");
     }
 

@@ -1,6 +1,7 @@
 package com.panzegoria.puzzleBuilder.Listeners; /**
  * Created by roger.boone on 6/5/2017.
  */
+import com.panzegoria.puzzleBuilder.Entities.MODE;
 import com.panzegoria.puzzleBuilder.Entities.PlayersState;
 import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
 import org.bukkit.Location;
@@ -20,8 +21,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.util.HashMap;
-
 import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -31,11 +30,11 @@ import static org.powermock.api.mockito.PowerMockito.when;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Player.class, PlayerInteractEvent.class, PlayerInventory.class})
-public class PlayerMouseListenerTest {
+public class ModelNewBuildingListenerTest {
 
     PlayerInteractEvent event;
     Player player;
-    PlayerMouseListener playerMouseListener;
+    ModelNewBuildingListener modelNewBuildingListener;
     Block block;
     Block block2;
     WrappedPlayer wrappedPlayer;
@@ -72,7 +71,7 @@ public class PlayerMouseListenerTest {
         wrappedPlayer = new WrappedPlayer(player, playerState);
         wrappedPlayer.Save();
 
-        playerMouseListener = new PlayerMouseListener(Material.STICK, playerState);
+        modelNewBuildingListener = new ModelNewBuildingListener(Material.STICK, playerState);
     }
 
     @Test
@@ -83,9 +82,10 @@ public class PlayerMouseListenerTest {
         when(event.getPlayer()).thenReturn(player);
         when(event.getAction()).thenReturn(Action.LEFT_CLICK_BLOCK);
         when(event.getClickedBlock()).thenReturn(block);
+        wrappedPlayer.Mode = MODE.MODEL_NEW_BUILDING;
 
         //act
-        playerMouseListener.onPlayerInteract(event);
+        modelNewBuildingListener.onPlayerInteract(event);
         Vector point = playerState.getState(player.getName()).Selection.getMinVector();
 
         //assert
@@ -102,7 +102,7 @@ public class PlayerMouseListenerTest {
         when(event.getClickedBlock()).thenReturn(block);
 
         //act
-        playerMouseListener.onPlayerInteract(event);
+        modelNewBuildingListener.onPlayerInteract(event);
         Vector point = playerState.getState(player.getName()).Selection.getPoint1();
 
         //assert
@@ -120,11 +120,11 @@ public class PlayerMouseListenerTest {
 
         wrappedPlayer = playerState.getState(player.getName());
         wrappedPlayer.Selection.setPoint1(new Vector(0,0,0));
-        wrappedPlayer.IsDrafting=false;
+        wrappedPlayer.Mode= MODE.BUILD_PUZZLE;
         wrappedPlayer.Save();
 
         //act
-        playerMouseListener.onPlayerInteract(event);
+        modelNewBuildingListener.onPlayerInteract(event);
         Vector point = playerState.getState(player.getName()).Selection.getPoint1();
 
         //assert
@@ -144,11 +144,12 @@ public class PlayerMouseListenerTest {
 
         //act
         wrappedPlayer.Selection.setPoint1(point1);
+        wrappedPlayer.Mode = MODE.MODEL_NEW_BUILDING;
         wrappedPlayer.Save();
         wrappedPlayer = playerState.getState(player.getName());
 
         //click the mouse button
-        playerMouseListener.onPlayerInteract(event);
+        modelNewBuildingListener.onPlayerInteract(event);
 
         //get the results
         Vector point = wrappedPlayer.Selection.getMaxVector();

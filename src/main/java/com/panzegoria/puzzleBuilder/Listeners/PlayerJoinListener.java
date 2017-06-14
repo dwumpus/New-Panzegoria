@@ -1,5 +1,6 @@
 package com.panzegoria.puzzleBuilder.Listeners;
 
+import com.panzegoria.puzzleBuilder.Entities.IPlayersState;
 import com.panzegoria.puzzleBuilder.Entities.PlayersState;
 import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
 import org.bukkit.entity.Player;
@@ -15,9 +16,9 @@ import java.util.List;
  */
 public class PlayerJoinListener implements Listener {
 
-    private PlayersState _state;
+    private IPlayersState _state;
 
-    public PlayerJoinListener(PlayersState state) {
+    public PlayerJoinListener(IPlayersState state) {
         _state =state;
     }
 

@@ -1,6 +1,7 @@
 package com.panzegoria.puzzleBuilder.Commands;
 
 import com.panzegoria.puzzleBuilder.Entities.IPlayersState;
+import com.panzegoria.puzzleBuilder.Entities.MODE;
 import com.panzegoria.puzzleBuilder.Entities.PlayersState;
 import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
 import com.panzegoria.puzzleBuilder.PuzzleBuilderPlugin;
@@ -15,11 +16,11 @@ import java.util.HashMap;
 /**
  * Created by roger.boone on 6/4/2017.
  */
-public class CommandBlueprintEnable implements CommandExecutor {
+public class CommandToggleMode implements CommandExecutor {
 
     IPlayersState _playerState;
 
-    public CommandBlueprintEnable(IPlayersState playerState) {
+    public CommandToggleMode(IPlayersState playerState) {
         _playerState = playerState;
     }
 
@@ -29,11 +30,25 @@ public class CommandBlueprintEnable implements CommandExecutor {
             Player player = (Player) commandSender;
 
             WrappedPlayer state = _playerState.getState(player.getName());
-            state.IsDrafting = true;
+            state.Mode = getNextMode(state.Mode);
+            player.sendMessage(String.format("Your new mode is: %s", state.Mode.toString()));
             state.Save();
             return true;
         }
 
         return false;
+    }
+
+    private MODE getNextMode(MODE modeIn) {
+        switch (modeIn) {
+            case BUILD_PUZZLE:
+                return MODE.CREATE_BUILDING;
+            case CREATE_BUILDING:
+                return MODE.MODEL_NEW_BUILDING;
+            case MODEL_NEW_BUILDING:
+                return MODE.SETUP_PUZZLE;
+            default:
+                return MODE.BUILD_PUZZLE;
+        }
     }
 }

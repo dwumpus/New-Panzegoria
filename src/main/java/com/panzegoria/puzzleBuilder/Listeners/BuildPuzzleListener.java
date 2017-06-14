@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 /**
  * Created by roger.boone on 6/10/2017.
  */
-public class PlaceBlockOnHintListener implements Listener {
+public class BuildPuzzleListener implements Listener {
 
     @EventHandler
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {

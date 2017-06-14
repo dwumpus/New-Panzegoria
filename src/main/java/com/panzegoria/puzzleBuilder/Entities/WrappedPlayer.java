@@ -9,15 +9,17 @@ import org.bukkit.entity.Player;
 public class WrappedPlayer {
     private IPlayersState _stateContainer;
 
-    public boolean IsDrafting = true;
     public DIRECTION Direction = DIRECTION.NORTH_EAST;
     public ISelection Selection;
     public String Name;
+    public MODE Mode;
+    public String LoadedBlocks;
 
-    public WrappedPlayer(Player bukkitPlayer, PlayersState stateContainer) {
+    public WrappedPlayer(Player bukkitPlayer, IPlayersState stateContainer) {
         Direction = DIRECTION.NORTH_EAST;
         Selection = new Selection();
         Name = bukkitPlayer.getName();
+        Mode = MODE.BUILD_PUZZLE;
         _stateContainer = stateContainer;
     }
 

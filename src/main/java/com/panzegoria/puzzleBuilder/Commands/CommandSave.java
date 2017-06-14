@@ -16,13 +16,13 @@ import java.io.*;
 /**
  * Created by roger.boone on 6/11/2017.
  */
-public class CommandBlueprintSave implements CommandExecutor {
+public class CommandSave implements CommandExecutor {
 
-    private PlayersState _playersState;
+    private IPlayersState _playersState;
     private File _dataDirectory;
     private IBlockService _blockService;
 
-    public CommandBlueprintSave(IBlockService blockService, IPlayersState playersState, File dataDirectory) {
+    public CommandSave(IBlockService blockService, IPlayersState playersState, File dataDirectory) {
         _playersState = playersState;
         _dataDirectory = dataDirectory;
         _blockService = blockService;
@@ -46,7 +46,6 @@ public class CommandBlueprintSave implements CommandExecutor {
             {
                 writer = new BufferedWriter( new FileWriter( filename));
                 writer.write( dataOut);
-
             }
             catch ( IOException e)
             {
@@ -62,6 +61,8 @@ public class CommandBlueprintSave implements CommandExecutor {
                 {
                 }
             }
+            player.sendMessage(String.format("New Puzzle %s Saved!", strings[0].toString()));
+
             return true;
         }
 

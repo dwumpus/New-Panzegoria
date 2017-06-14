@@ -5,12 +5,12 @@ commands:
    hint:
       description: This is a demo command.
       usage: /<command>
-   BlueprintEnable:
-      description: Starts your blueprinting session
-      usage: /BlueprintEnable
-   BlueprintDisable:
-      description: Stops your blueprinting session
-      usage: /BlueprintEnable
+   Load:
+      description: Loads a Map
+      usage: /Load
+   ToggleMode:
+      description: Changes the Mode
+      usage: /ToggleMode
    Rotate:
       description: Rotates Build Direction 90 Degrees Clockwise
       usage: /Rotate

@@ -1,11 +1,14 @@
 package com.panzegoria.puzzleBuilder.Services;
 
 import com.panzegoria.puzzleBuilder.Entities.*;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import java.util.HashMap;
@@ -48,14 +51,17 @@ public class BlockService implements IBlockService {
     }
 
     @Override
-    public void setBlocks(World world, WrappedBlockSet blocksIn, Vector targetVector, DIRECTION quadrant, boolean actualBlocks) {
+    public void setBlocks(World world, WrappedBlockSet blocksIn, Vector targetVector, DIRECTION quadrant, boolean actualBlocks) throws Exception {
+
+        if(world==null)
+            return;
 
         Location newLocation;
         HashMap<Vector, WrappedBlock> blocks = blocksIn.getBlocks();
 
         for(Vector loc : blocks.keySet()) {
 
-            Vector newVector = loc.add(targetVector);
+            Vector newVector = loc.clone().add(targetVector);
             newLocation = new Location(world, newVector.getX(),
                     newVector.getY(), newVector.getZ());
 
@@ -88,9 +94,14 @@ public class BlockService implements IBlockService {
 
             //Set the block;
             if (actualBlocks) {
-                setActualBlock(world, newLocation.toVector(), blocks.get(loc));
+                setActualBlock(newLocation, blocks.get(loc));
             } else {
-                setHintBlock(world, newLocation.toVector(), blocks.get(loc).BlockType);
+                if(blocks == null) return;
+                if(loc==null) return;
+                if(blocks.get(loc)==null) {
+                    throw new Exception("Location Null!");
+                }
+                setHintBlock(newLocation, blocks.get(loc).BlockType);
             }
 
         }
@@ -99,19 +110,22 @@ public class BlockService implements IBlockService {
     }
 
     @Override
-    public void setActualBlock(World world, Vector target, WrappedBlock block) {
-        Location newLocation = new Location(world, target.getX(), target.getY(), target.getZ());
-        Block targetBlock = world.getBlockAt(newLocation);
+    public void setActualBlock(Location target, WrappedBlock block) {
+        Block targetBlock = target.getWorld().getBlockAt(target);
         targetBlock.setType(block.BlockType);
         targetBlock.setData(block.OldData);
     }
 
     @Override
-    public void setHintBlock(World world, Vector target, Material mat) {
+    public void setHintBlock(Location target, Material mat) {
         target = target.add(new Vector(.5, -.5, .5));
-        Location loc = new Location(world, target.getX(), target.getY(), target.getZ());
-        ArmorStand armorStand = world.spawn(loc, ArmorStand.class);
-        armorStand.setHelmet(new ItemStack(mat));
+        ArmorStand armorStand = (ArmorStand) target.getWorld().spawnEntity(target, EntityType.ARMOR_STAND);
+        //ArmorStand armorStand = world.spawn(loc, ArmorStand.class);
+        if(armorStand == null)
+            return;
+
+        ItemStack itemStack = new ItemStack(mat);
+        armorStand.setHelmet(itemStack);
         armorStand.setSmall(true);
         armorStand.setGravity(false);
         armorStand.setVisible(false);

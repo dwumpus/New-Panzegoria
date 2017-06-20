@@ -1,5 +1,6 @@
 package com.panzegoria.puzzleBuilder.Entities;
 
+import com.panzegoria.puzzleBuilder.PuzzleBuilderPlugin;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -7,7 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.MaterialData;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 /**
@@ -16,7 +17,6 @@ import org.bukkit.util.Vector;
 public class WrappedBlock {
 
     public Material BlockType;
-    public MaterialData BlockData;
     public Byte OldData;
     private World _world;
 
@@ -44,7 +44,6 @@ public class WrappedBlock {
         String[] serializedData = serializedState.split("!");
 
         BlockType = materialFromString(serializedData[0]);
-        //BlockData = serializedData.
         OldData = Byte.parseByte(serializedData[1]);
         _world = world;
     }
@@ -57,6 +56,38 @@ public class WrappedBlock {
     }
 
     public void setHintBlock(Vector target) {
+        Location newLocation = new Location(_world, target.getX(), target.getY(), target.getZ());
+        Block targetBlock = newLocation.getBlock();
+        WrappedBlock originalBlock = new WrappedBlock(targetBlock);
+
+        targetBlock.setType(BlockType);
+        targetBlock.setData(OldData);
+
+        new BukkitRunnable() {
+
+            @Override
+            public void run() {
+                targetBlock.setType(originalBlock.BlockType);
+                targetBlock.setData(originalBlock.OldData);
+            }
+        }.runTaskLater(PuzzleBuilderPlugin.INSTANCE, 100);
+    }
+
+    private void createArmorStandAt(Location target, Material mat) {
+        target = target.add(new Vector(.5, -.5, .5));
+        //ArmorStand armorStand = (ArmorStand) target.getWorld().spawnEntity(target, EntityType.ARMOR_STAND);
+        ArmorStand armorStand = target.getWorld().spawn(target, ArmorStand.class);
+        if(armorStand == null)
+            return;
+
+        ItemStack itemStack = new ItemStack(mat);
+        armorStand.setHelmet(itemStack);
+        armorStand.setSmall(true);
+        armorStand.setGravity(false);
+        armorStand.setVisible(false);
+    }
+
+/*    public void setHintBlock(Vector target) {
         target = target.add(new Vector(.5, -.5, .5));
         Location loc = new Location(_world, target.getX(), target.getY(), target.getZ());
         ArmorStand armorStand = _world.spawn(loc, ArmorStand.class);
@@ -64,7 +95,7 @@ public class WrappedBlock {
         armorStand.setSmall(true);
         armorStand.setGravity(false);
         armorStand.setVisible(false);
-    }
+    }*/
 
     private Material materialFromString(String stringIn) {
         return Material.valueOf(stringIn);

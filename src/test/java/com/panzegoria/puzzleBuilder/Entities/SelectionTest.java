@@ -20,7 +20,6 @@ public class SelectionTest {
 
     private Vector point1 = new Vector(1,10,-3);
     private Vector point2 = new Vector(10,5,22);
-    private World world = PowerMockito.mock(World.class);
 
     @Test
     public void testConstructor() {

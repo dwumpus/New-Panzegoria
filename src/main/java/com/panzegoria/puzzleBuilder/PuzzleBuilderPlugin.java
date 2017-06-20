@@ -1,22 +1,14 @@
 package com.panzegoria.puzzleBuilder;
 
-import com.panzegoria.puzzleBuilder.Commands.CommandLoad;
-import com.panzegoria.puzzleBuilder.Commands.CommandSave;
-import com.panzegoria.puzzleBuilder.Commands.CommandRotate;
-import com.panzegoria.puzzleBuilder.Commands.CommandToggleMode;
 import com.panzegoria.puzzleBuilder.Entities.IPlayersState;
 import com.panzegoria.puzzleBuilder.Entities.PlayersState;
 import com.panzegoria.puzzleBuilder.Listeners.BuildPuzzleListener;
-import com.panzegoria.puzzleBuilder.Listeners.PlayerJoinListener;
 import com.panzegoria.puzzleBuilder.Listeners.ModelNewBuildingListener;
-import com.panzegoria.puzzleBuilder.Listeners.SetupPuzzleListener;
-import com.panzegoria.puzzleBuilder.Services.BlockService;
-import com.panzegoria.puzzleBuilder.Services.IBlockService;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.*;
+import java.nio.file.Files;
 import java.util.logging.Logger;
 
 /**
@@ -28,44 +20,19 @@ public final class PuzzleBuilderPlugin extends JavaPlugin {
     public static PuzzleBuilderPlugin INSTANCE;
     private IPlayersState playerState;
     public static Logger logger = Logger.getLogger(PLUGIN_NAME);
-    public static ItemStack configuredDraftingTool;
     public FileConfiguration config = getConfig();
-    public IBlockService blockService;
 
     @Override
     public void onEnable() {
         logger.info("Blueprinting is being enabling...");
         this.INSTANCE = this;
         this.playerState = new PlayersState();
-        blockService = new BlockService();
-
-        configuredDraftingTool = (ItemStack) config.get("Tools.Drafting");
-
-        if (configuredDraftingTool == null) {
-            config.addDefault("Tools.Drafting", new ItemStack(Material.STICK));
-            config.options().copyDefaults(true);
-            saveConfig();
-            configuredDraftingTool = (ItemStack) config.get("Tools.Drafting");
-        }
 
         getServer().getPluginManager().registerEvents(
                 new BuildPuzzleListener(), this);
         getServer().getPluginManager().registerEvents(
-                new ModelNewBuildingListener(configuredDraftingTool.getType(), playerState), this);
-        getServer().getPluginManager().registerEvents(
-                new PlayerJoinListener(playerState), this);
-        getServer().getPluginManager().registerEvents(
-                new SetupPuzzleListener(configuredDraftingTool.getType(),playerState, blockService), this);
+                new ModelNewBuildingListener(playerState), this);
 
-
-        this.getCommand("Rotate").setExecutor(
-                new CommandRotate(playerState));
-        this.getCommand("Save").setExecutor(
-                new CommandSave(blockService, playerState, getDataFolder()));
-        this.getCommand("Load").setExecutor(
-                new CommandLoad(playerState, getDataFolder()));
-        this.getCommand("ToggleMode").setExecutor(
-                new CommandToggleMode(playerState));
 
         logger.info("Blueprinting plugin enabled!");
     }
@@ -314,6 +281,59 @@ public final class PuzzleBuilderPlugin extends JavaPlugin {
     @Override
     public void onLoad() {
         logger.info("Blueprinting plugin is loaded.");
+    }
+
+    public static String makeFilename(String nameIn) {
+        nameIn = nameIn.replaceAll("[^a-zA-Z0-9.-]", "_");
+        String folder = INSTANCE.getDataFolder().getAbsolutePath() + "\\Maps";
+
+        File file = new File(folder);
+
+        if(!(file.exists())) {
+            file.mkdir();
+        }
+
+        return String.format(INSTANCE.getDataFolder().getAbsolutePath() + "\\Maps\\map-%s.txt", nameIn);
+    }
+
+    public static String readFile(String filename) {
+        File f = new File(filename);
+        try {
+            byte[] bytes = Files.readAllBytes(f.toPath());
+            return new String(bytes,"UTF-8");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static boolean writeFile(String dataOut, String newname) {
+        String filename = makeFilename(newname);
+
+        BufferedWriter writer = null;
+        try
+        {
+            writer = new BufferedWriter( new FileWriter( filename));
+            writer.write( dataOut);
+        }
+        catch ( IOException e)
+        {
+        }
+        finally
+        {
+            try
+            {
+                if ( writer != null)
+                    writer.close( );
+            }
+            catch ( IOException e)
+            {
+            }
+        }
+
+        return true;
     }
 
 }

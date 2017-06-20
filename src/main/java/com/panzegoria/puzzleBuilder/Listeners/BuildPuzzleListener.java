@@ -21,6 +21,7 @@ public class BuildPuzzleListener implements Listener {
         if (entity.getType() == EntityType.ARMOR_STAND) {
             ArmorStand stand = (ArmorStand) entity;
             Player player = event.getPlayer();
+
             Location location = entity.getLocation();
 
             if (stand.getHelmet().getType() == player.getInventory().getItemInMainHand().getType()) {

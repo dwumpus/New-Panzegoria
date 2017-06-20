@@ -1,6 +1,4 @@
 package com.panzegoria.puzzleBuilder.Entities;
-
-import org.bukkit.World;
 import org.bukkit.util.Vector;
 
 

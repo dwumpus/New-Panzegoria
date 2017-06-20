@@ -5,16 +5,5 @@ commands:
    hint:
       description: This is a demo command.
       usage: /<command>
-   Load:
-      description: Loads a Map
-      usage: /Load
-   ToggleMode:
-      description: Changes the Mode
-      usage: /ToggleMode
-   Rotate:
-      description: Rotates Build Direction 90 Degrees Clockwise
-      usage: /Rotate
-   Save:
-      description: Saves map to disk.
-      usage: /Save
+
 

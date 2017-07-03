@@ -1,28 +1,22 @@
 package com.panzegoria.puzzleBuilder.Listeners;
 
-import com.comphenix.protocol.wrappers.nbt.NbtCompound;
-import com.panzegoria.puzzleBuilder.Entities.*;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.panzegoria.puzzleBuilder.Entities.IPlayersState;
+import com.panzegoria.puzzleBuilder.Entities.WrappedBlockSet;
+import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
 import com.panzegoria.puzzleBuilder.PuzzleBuilderPlugin;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.conversations.ConversationContext;
-import org.bukkit.conversations.Prompt;
-import org.bukkit.conversations.StringPrompt;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.material.MaterialData;
-import org.bukkit.util.Vector;
 
-import java.util.List;
 
 /**
  * Created by roger.boone on 6/4/2017.
@@ -30,7 +24,8 @@ import java.util.List;
 public class ModelNewBuildingListener implements Listener {
 
     private IPlayersState _stateContainer;
-
+    private static String REST_URI
+            = "http://localhost:8080/PuzzleRepositoryRest-0.0.1-SNAPSHOT/rest/puzzle";
     public ModelNewBuildingListener(IPlayersState stateContainer) {
         _stateContainer = stateContainer;
     }
@@ -74,14 +69,29 @@ public class ModelNewBuildingListener implements Listener {
 
         if(itemStack.getType() == Material.BOOK_AND_QUILL) {
             //Check to see if this is already a used book
-
-
             puzzlePlayer.Selection.setPoint2(blockClicked.getLocation().toVector());
             WrappedBlockSet blockSet = new WrappedBlockSet(player.getWorld(), puzzlePlayer.Selection);
 
+            try {
+                savePuzzle("test", blockSet.toString());
+            } catch (Exception ex) {
 
+            }
         }
         return true;
+    }
+
+    public void savePuzzle(String name, String puzzleData) throws Exception {
+        String navigation;
+
+        String uri = String.format("%s/post?name=%s",REST_URI, name);
+
+        HttpResponse<JsonNode> jsonResponse = Unirest.post(uri)
+                .header("accept", "application/json")
+                .queryString("name", name)
+                .field("name", puzzleData)
+                .asJson();
+
     }
 
     private boolean IsValidEvent(PlayerInteractEvent event) {

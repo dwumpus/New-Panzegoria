@@ -1,6 +1,6 @@
 name: PuzzleBuilder
 main: com.panzegoria.puzzleBuilder.PuzzleBuilderPlugin
-version: .01 Dev
+version: .02 Dev
 commands:
    hint:
       description: This is a demo command.

@@ -1,11 +1,11 @@
-package com.panzegoria.puzzleBuilder.Entities;
+package com.panzegoria.puzzleBuilder.Services.Capabilities;
 
 import org.bukkit.util.Vector;
 
 /**
  * Created by roger.boone on 6/9/2017.
  */
-public interface ISelection {
+public interface Selectable {
     Vector getMinVector();
 
     Vector getMaxVector();

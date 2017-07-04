@@ -1,5 +1,7 @@
-package com.panzegoria.puzzleBuilder.Entities;
+package com.panzegoria.puzzleBuilder.Services;
 
+import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
+import com.panzegoria.puzzleBuilder.Services.Capabilities.Stateful;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
@@ -7,10 +9,10 @@ import java.util.HashMap;
 /**
  * Created by roger.boone on 6/10/2017.
  */
-public class PlayersState implements IPlayersState {
+public class PlayerStateService implements Stateful {
     private HashMap<String, WrappedPlayer> map;
 
-    public PlayersState() {
+    public PlayerStateService() {
         initialize();
     }
 

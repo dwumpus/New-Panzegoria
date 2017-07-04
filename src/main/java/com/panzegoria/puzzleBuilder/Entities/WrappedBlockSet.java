@@ -1,60 +1,23 @@
 package com.panzegoria.puzzleBuilder.Entities;
 
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
+import com.panzegoria.puzzleBuilder.Services.Capabilities.Vectorable;
 import org.bukkit.util.Vector;
-
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by roger.boone on 6/11/2017.
  */
-public class WrappedBlockSet implements IWrappedBlockSet {
+public class WrappedBlockSet implements Vectorable {
 
     private HashMap<Vector, WrappedBlock> map;
-    private World _world;
 
     public WrappedBlockSet() {
         initialize();
     }
 
-    public WrappedBlockSet(World world, String serializedValue) {
-        _world = world;
+    public WrappedBlockSet(String serializedValue) {
         initialize();
         deserialize(serializedValue);
-    }
-
-    public WrappedBlockSet(World world, ISelection selection) {
-        _world = world;
-        initialize();
-        Vector minLocation = selection.getMinVector();
-        Vector maxLocation = selection.getMaxVector();
-
-        Block block;
-
-        Vector offset = getOffset(minLocation);
-
-        for (double x = minLocation.getX(); x < maxLocation.getX(); x++) {
-            for (double y = minLocation.getY(); y < maxLocation.getY(); y++) {
-                for (double z = minLocation.getZ(); z < maxLocation.getZ(); z++) {
-                    block = world.getBlockAt(
-                            new Location(world, x, y, z));
-
-                    if(block.getType() != Material.AIR) {
-                        map.put(new Vector(x, y, z).add(offset), new WrappedBlock(block));
-                    }
-                }
-            }
-        }
-    }
-
-    private Vector getOffset(Vector originalVector) {
-        Vector origin = new Vector(0, 0, 0);
-        return origin.subtract(originalVector);
     }
 
     private void initialize() {
@@ -68,7 +31,9 @@ public class WrappedBlockSet implements IWrappedBlockSet {
 
     @Override
     public String toString() {
-        String valueOut = new String();
+
+        String valueOut;
+        valueOut = "";
 
         for (Vector vector : map.keySet()) {
             valueOut = valueOut + fromVector(vector);
@@ -85,17 +50,9 @@ public class WrappedBlockSet implements IWrappedBlockSet {
     }
 
     @Override
-    public List<String> getBlocks() {
-        List<String> valuesOut = new ArrayList<>();
+    public HashMap<Vector, WrappedBlock> getBlocks() {
 
-        String workingBlock = new String();
-        for (Vector vector : map.keySet()) {
-            workingBlock = fromVector(vector);
-            workingBlock = workingBlock + map.get(vector).toString();
-            valuesOut.add(workingBlock);
-        }
-
-        return valuesOut;
+        return map;
     }
 
     private void deserialize(String allDataIn) {
@@ -104,7 +61,7 @@ public class WrappedBlockSet implements IWrappedBlockSet {
         for (String item : items) {
             String[] parts = item.split("@");
 
-            map.put(toVector(parts[0]), new WrappedBlock( _world, parts[1]));
+            map.put(toVector(parts[0]), new WrappedBlock(parts[1]));
         }
     }
 

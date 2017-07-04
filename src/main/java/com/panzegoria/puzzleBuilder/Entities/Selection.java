@@ -1,11 +1,12 @@
 package com.panzegoria.puzzleBuilder.Entities;
+import com.panzegoria.puzzleBuilder.Services.Capabilities.Selectable;
 import org.bukkit.util.Vector;
 
 
 /**
  * Created by roger.boone on 6/4/2017.
  */
-public class Selection implements ISelection {
+public class Selection implements Selectable {
 
     private Vector point1;
     private Vector point2;

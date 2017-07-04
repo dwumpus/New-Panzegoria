@@ -1,17 +1,15 @@
-package com.panzegoria.puzzleBuilder.Entities;
+package com.panzegoria.puzzleBuilder.Services.Capabilities;
 
+import com.panzegoria.puzzleBuilder.Entities.WrappedBlock;
 import org.bukkit.util.Vector;
 
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by roger.boone on 6/19/2017.
  */
-public interface IWrappedBlockSet {
+public interface Vectorable {
     void addWrappedBlock(Vector loc, WrappedBlock block);
-
     Integer getBlockCount();
-
-    List<String> getBlocks();
+    HashMap<Vector, WrappedBlock> getBlocks();
 }

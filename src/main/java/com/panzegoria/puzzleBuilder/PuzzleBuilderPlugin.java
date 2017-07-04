@@ -1,7 +1,7 @@
 package com.panzegoria.puzzleBuilder;
 
-import com.panzegoria.puzzleBuilder.Entities.IPlayersState;
-import com.panzegoria.puzzleBuilder.Entities.PlayersState;
+import com.panzegoria.puzzleBuilder.Services.Capabilities.Stateful;
+import com.panzegoria.puzzleBuilder.Services.PlayerStateService;
 import com.panzegoria.puzzleBuilder.Listeners.BuildPuzzleListener;
 import com.panzegoria.puzzleBuilder.Listeners.ModelNewBuildingListener;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,7 +18,7 @@ public final class PuzzleBuilderPlugin extends JavaPlugin {
 
     public final static String PLUGIN_NAME = PuzzleBuilderPlugin.class.getCanonicalName();
     public static PuzzleBuilderPlugin INSTANCE;
-    private IPlayersState playerState;
+    private Stateful playerState;
     public static Logger logger = Logger.getLogger(PLUGIN_NAME);
     public FileConfiguration config = getConfig();
 
@@ -26,7 +26,7 @@ public final class PuzzleBuilderPlugin extends JavaPlugin {
     public void onEnable() {
         logger.info("Blueprinting is being enabling...");
         this.INSTANCE = this;
-        this.playerState = new PlayersState();
+        this.playerState = new PlayerStateService();
 
         getServer().getPluginManager().registerEvents(
                 new BuildPuzzleListener(), this);

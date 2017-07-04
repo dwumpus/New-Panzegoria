@@ -3,8 +3,7 @@ package com.panzegoria.puzzleBuilder.Listeners;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
-import com.panzegoria.puzzleBuilder.Entities.IPlayersState;
-import com.panzegoria.puzzleBuilder.Entities.WrappedBlockSet;
+import com.panzegoria.puzzleBuilder.Services.Capabilities.Stateful;
 import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
 import com.panzegoria.puzzleBuilder.PuzzleBuilderPlugin;
 import org.bukkit.Material;
@@ -23,10 +22,10 @@ import org.bukkit.inventory.ItemStack;
  */
 public class ModelNewBuildingListener implements Listener {
 
-    private IPlayersState _stateContainer;
+    private Stateful _stateContainer;
     private static String REST_URI
             = "http://localhost:8080/PuzzleRepositoryRest-0.0.1-SNAPSHOT/rest/puzzle";
-    public ModelNewBuildingListener(IPlayersState stateContainer) {
+    public ModelNewBuildingListener(Stateful stateContainer) {
         _stateContainer = stateContainer;
     }
 
@@ -70,13 +69,8 @@ public class ModelNewBuildingListener implements Listener {
         if(itemStack.getType() == Material.BOOK_AND_QUILL) {
             //Check to see if this is already a used book
             puzzlePlayer.Selection.setPoint2(blockClicked.getLocation().toVector());
-            WrappedBlockSet blockSet = new WrappedBlockSet(player.getWorld(), puzzlePlayer.Selection);
+            puzzlePlayer.Save();
 
-            try {
-                savePuzzle("test", blockSet.toString());
-            } catch (Exception ex) {
-
-            }
         }
         return true;
     }

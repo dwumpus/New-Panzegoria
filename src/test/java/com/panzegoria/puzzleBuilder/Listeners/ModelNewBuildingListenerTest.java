@@ -1,7 +1,7 @@
 package com.panzegoria.puzzleBuilder.Listeners; /**
  * Created by roger.boone on 6/5/2017.
  */
-import com.panzegoria.puzzleBuilder.Entities.PlayersState;
+import com.panzegoria.puzzleBuilder.Services.PlayerStateService;
 import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -37,14 +37,14 @@ public class ModelNewBuildingListenerTest {
     WrappedPlayer wrappedPlayer;
     Material configuredItem;
     PlayerInventory inventory;
-    PlayersState playerState;
+    PlayerStateService playerState;
     Vector point1;
     Vector point2;
 
     private void initializeMocks() {
         //mock all the minecraft items involved
         World world = PowerMockito.mock(World.class);
-        playerState = new PlayersState();
+        playerState = new PlayerStateService();
 
         configuredItem = Material.STICK;
         point1 = new Vector(10,4,-2);

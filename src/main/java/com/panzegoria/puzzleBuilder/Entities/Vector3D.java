@@ -1,0 +1,34 @@
+package com.panzegoria.puzzleBuilder.Entities;
+
+/**
+ * Created by roger.boone on 7/5/2017.
+ */
+public class Vector3D {
+    private double X;
+    private double Y;
+    private double Z;
+
+    public double getX() {
+        return X;
+    }
+
+    public void setX(double x) {
+        X = x;
+    }
+
+    public double getY() {
+        return Y;
+    }
+
+    public void setY(double y) {
+        Y = y;
+    }
+
+    public double getZ() {
+        return Z;
+    }
+
+    public void setZ(double z) {
+        Z = z;
+    }
+}

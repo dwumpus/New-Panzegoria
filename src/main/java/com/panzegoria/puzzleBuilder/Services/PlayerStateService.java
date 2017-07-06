@@ -1,6 +1,7 @@
 package com.panzegoria.puzzleBuilder.Services;
 
-import com.panzegoria.puzzleBuilder.Entities.WrappedPlayer;
+import com.panzegoria.puzzleBuilder.Entities.WrappedPlayerState;
+import com.panzegoria.puzzleBuilder.PuzzleBuilderPlugin;
 import com.panzegoria.puzzleBuilder.Services.Capabilities.Stateful;
 import org.bukkit.Bukkit;
 
@@ -10,7 +11,7 @@ import java.util.HashMap;
  * Created by roger.boone on 6/10/2017.
  */
 public class PlayerStateService implements Stateful {
-    private HashMap<String, WrappedPlayer> map;
+    private HashMap<String, WrappedPlayerState> map;
 
     public PlayerStateService() {
         initialize();
@@ -21,23 +22,19 @@ public class PlayerStateService implements Stateful {
     }
 
     @Override
-    public void savePlayerState(WrappedPlayer state) {
-        map.put(state.Name, state);
+    public void savePlayerState(WrappedPlayerState state) {
+        map.put(state.getName(), state);
     }
 
     @Override
-    public Integer getBlockCount() {
-        return map.size();
-    }
-
-    @Override
-    public WrappedPlayer getState(String name)
+    public WrappedPlayerState getState(String name)
     {
         if(map.containsKey(name)) {
             return map.get(name);
         }
 
-        WrappedPlayer player = new WrappedPlayer(Bukkit.getPlayer(name), this);
+        WrappedPlayerState player =new WrappedPlayerState();
+        player.setName(name);
         savePlayerState(player);
         return player;
     }

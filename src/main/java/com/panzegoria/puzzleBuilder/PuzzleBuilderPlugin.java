@@ -1,14 +1,20 @@
 package com.panzegoria.puzzleBuilder;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.panzegoria.puzzleBuilder.Listeners.MarkRegionListener;
+import com.panzegoria.puzzleBuilder.Listeners.SigningBookListener;
+import com.panzegoria.puzzleBuilder.Services.Capabilities.PuzzlePersistence;
+import com.panzegoria.puzzleBuilder.Services.PuzzleRepositoryClient;
 import com.panzegoria.puzzleBuilder.Services.Capabilities.Stateful;
+import com.panzegoria.puzzleBuilder.Services.Capabilities.ObjectWrappers;
 import com.panzegoria.puzzleBuilder.Services.PlayerStateService;
-import com.panzegoria.puzzleBuilder.Listeners.BuildPuzzleListener;
-import com.panzegoria.puzzleBuilder.Listeners.ModelNewBuildingListener;
+import com.panzegoria.puzzleBuilder.Services.SpigotWrappers;
+import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.*;
-import java.nio.file.Files;
 import java.util.logging.Logger;
 
 /**
@@ -16,25 +22,43 @@ import java.util.logging.Logger;
  */
 public final class PuzzleBuilderPlugin extends JavaPlugin {
 
-    public final static String PLUGIN_NAME = PuzzleBuilderPlugin.class.getCanonicalName();
+    private final static String PLUGIN_NAME = PuzzleBuilderPlugin.class.getCanonicalName();
     public static PuzzleBuilderPlugin INSTANCE;
+    private static ItemStack REGION_SELECTOR;
     private Stateful playerState;
     public static Logger logger = Logger.getLogger(PLUGIN_NAME);
-    public FileConfiguration config = getConfig();
+    private FileConfiguration config = getConfig();
+    public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public static ObjectWrappers wrappers;
+    public static PuzzlePersistence persistence;
 
     @Override
     public void onEnable() {
         logger.info("Blueprinting is being enabling...");
         this.INSTANCE = this;
         this.playerState = new PlayerStateService();
+        readConfig();
+        wrappers = new SpigotWrappers();
+        persistence = new PuzzleRepositoryClient( "http://localhost:8080/PuzzleRepositoryRest-0.0.1-SNAPSHOT/rest/puzzle");
 
         getServer().getPluginManager().registerEvents(
-                new BuildPuzzleListener(), this);
+                new MarkRegionListener(playerState, REGION_SELECTOR, wrappers), this);
+
         getServer().getPluginManager().registerEvents(
-                new ModelNewBuildingListener(playerState), this);
+                new SigningBookListener(playerState), this);
 
+        logger.info(String.format("%s plugin enabled!", PLUGIN_NAME));
+    }
 
-        logger.info("Blueprinting plugin enabled!");
+    private void readConfig() {
+        REGION_SELECTOR = (ItemStack) config.get("Tools.Drafting");
+
+        if(REGION_SELECTOR == null) {
+            config.addDefault("Tools.Drafting", new ItemStack(Material.STICK));
+            config.options().copyDefaults(true);
+            saveConfig();
+            REGION_SELECTOR = (ItemStack)config.get("Tools.Drafting");
+        }
     }
 
     /**
@@ -275,65 +299,12 @@ public final class PuzzleBuilderPlugin extends JavaPlugin {
      **/
     @Override
     public void onDisable() {
-        logger.info("Blueprinting is disabled.");
+        logger.info(String.format("%s plugin disabled!", PLUGIN_NAME));
     }
 
     @Override
     public void onLoad() {
-        logger.info("Blueprinting plugin is loaded.");
-    }
-
-    public static String makeFilename(String nameIn) {
-        nameIn = nameIn.replaceAll("[^a-zA-Z0-9.-]", "_");
-        String folder = INSTANCE.getDataFolder().getAbsolutePath() + "\\Maps";
-
-        File file = new File(folder);
-
-        if(!(file.exists())) {
-            file.mkdir();
-        }
-
-        return String.format(INSTANCE.getDataFolder().getAbsolutePath() + "\\Maps\\map-%s.txt", nameIn);
-    }
-
-    public static String readFile(String filename) {
-        File f = new File(filename);
-        try {
-            byte[] bytes = Files.readAllBytes(f.toPath());
-            return new String(bytes,"UTF-8");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
-
-    public static boolean writeFile(String dataOut, String newname) {
-        String filename = makeFilename(newname);
-
-        BufferedWriter writer = null;
-        try
-        {
-            writer = new BufferedWriter( new FileWriter( filename));
-            writer.write( dataOut);
-        }
-        catch ( IOException e)
-        {
-        }
-        finally
-        {
-            try
-            {
-                if ( writer != null)
-                    writer.close( );
-            }
-            catch ( IOException e)
-            {
-            }
-        }
-
-        return true;
+        logger.info(String.format("%s plugin loaded!", PLUGIN_NAME));
     }
 
 }

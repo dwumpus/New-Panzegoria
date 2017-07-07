@@ -1,7 +1,5 @@
 package com.panzegoria.puzzleBuilder.Services;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mashape.unirest.http.HttpResponse;
 import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
@@ -23,9 +21,9 @@ public class PuzzleRepositoryClient implements PuzzlePersistence {
 
     @Override
     public void savePuzzle(String name, WrappedBlockSet puzzle) {
-        String uri = String.format("%s/post?name=%s",REST_URI, name);
+        String uri = String.format("%s/post?name=%s", REST_URI, name);
 
-        String puzzleData = PuzzleBuilderPlugin.gson.toJson(puzzle.getMap());
+        String puzzleData= PuzzleBuilderPlugin.gson.toJson(puzzle.getMap());
 
         HttpResponse<JsonNode> jsonResponse = null;
 
@@ -39,7 +37,7 @@ public class PuzzleRepositoryClient implements PuzzlePersistence {
             e.printStackTrace();
         }
 
-        if(jsonResponse.getStatus() == 200) {
+        if (jsonResponse.getStatus() == 200) {
             //success
         }
     }
@@ -48,4 +46,7 @@ public class PuzzleRepositoryClient implements PuzzlePersistence {
     public WrappedBlockSet loadPuzzle(String name) {
         return null;
     }
+
+
+
 }

@@ -121,6 +121,7 @@ public class SpigotWrappers implements ObjectWrappers<Player, Block, Vector, Wor
 
     @Override
     public WrappedBlock[] unwrapBlocks(WrappedBlockSet wrappedBlockSet) {
+
         return wrappedBlockSet.getMap();
     }
 

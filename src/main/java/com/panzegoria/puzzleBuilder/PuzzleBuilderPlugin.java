@@ -28,13 +28,13 @@ public final class PuzzleBuilderPlugin extends JavaPlugin {
     private Stateful playerState;
     public static Logger logger = Logger.getLogger(PLUGIN_NAME);
     private FileConfiguration config = getConfig();
-    public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public static Gson gson = new GsonBuilder().create(); //setPrettyPrinting().create();
     public static ObjectWrappers wrappers;
     public static PuzzlePersistence persistence;
 
     @Override
     public void onEnable() {
-        logger.info("Blueprinting is being enabling...");
+        logger.info(String.format("%s plugin starting up...", PLUGIN_NAME));
         this.INSTANCE = this;
         this.playerState = new PlayerStateService();
         readConfig();
@@ -42,7 +42,7 @@ public final class PuzzleBuilderPlugin extends JavaPlugin {
         persistence = new PuzzleRepositoryClient( "http://localhost:8080/PuzzleRepositoryRest-0.0.1-SNAPSHOT/rest/puzzle");
 
         getServer().getPluginManager().registerEvents(
-                new MarkRegionListener(playerState, REGION_SELECTOR, wrappers), this);
+                new MarkRegionListener(playerState, REGION_SELECTOR), this);
 
         getServer().getPluginManager().registerEvents(
                 new SigningBookListener(playerState), this);

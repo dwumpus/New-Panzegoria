@@ -35,7 +35,7 @@ public class PuzzleRepositoryClientTest {
     @Test
     public void savePuzzle() throws Exception {
         //arrange
-        WrappedBlockSet set = getMockBlockSet(2000000);
+        WrappedBlockSet set = getMockBlockSet(200000);
 
         //act
         _persistence.savePuzzle("chicken", set);

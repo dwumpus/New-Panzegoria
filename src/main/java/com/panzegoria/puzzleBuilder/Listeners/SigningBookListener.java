@@ -26,12 +26,15 @@ public class SigningBookListener implements Listener {
     @EventHandler
     public void onPlayerEditBook(PlayerEditBookEvent event) {
         Player player = event.getPlayer();
+        if (!player.hasPermission("book.getText")) return;
 
-        WrappedPlayerState puzzlePlayer = _stateContainer.getState(player.getName());
+        if(event.isSigning()) {
+            WrappedPlayerState puzzlePlayer = _stateContainer.getState(player.getName());
 
-        WrappedBlockSet puzzleData = wrappers.wrapSelection(puzzlePlayer.getVectorsSelected(), event.getPlayer().getWorld());
+            WrappedBlockSet puzzleData = wrappers.wrapSelection(puzzlePlayer.getVectorsSelected(), player.getWorld());
 
-        persistence.savePuzzle(event.getNewBookMeta().getTitle(), puzzleData);
+            persistence.savePuzzle(event.getNewBookMeta().getTitle(), puzzleData);
+        }
 
     }
 }

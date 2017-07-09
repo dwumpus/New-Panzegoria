@@ -1,5 +1,6 @@
 package com.panzegoria.puzzleBuilder.Services;
 
+import com.panzegoria.puzzleBuilder.Entities.Selection;
 import com.panzegoria.puzzleBuilder.Entities.Vector3D;
 import com.panzegoria.puzzleBuilder.Services.Capabilities.ObjectWrappers;
 import org.bukkit.util.Vector;
@@ -33,6 +34,14 @@ public class SpigotWrappersTest {
 
     @Test
     public void wrapSelection() throws Exception {
+        //arrange
+        //Selection
+
+
+        //act
+
+        //assert
+
     }
 
     @Test
